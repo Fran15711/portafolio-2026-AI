@@ -26,6 +26,7 @@
     scrollThreshold:      60,   // px — scroll para activar navbar
     maxParticles:         55,   // cursor trail
     api:          '/api/chat',
+    trackUrl:     'https://script.google.com/macros/s/AKfycbzmEivrFL4dlbf9y2oat3s6XulVHanzZ6vPKg79B5GOsIXpoFLiZcGs3XcD_vuMtOci/exec',
   };
 
   /* ============================================================
@@ -76,11 +77,23 @@
     /* ─── DEV output ─── */
     console.log('[FN:track]', name, data);
 
-    /* ─── Analytics hooks (activar cuando esté listo) ───
+    /* ─── Envío a Google Sheets via Apps Script Web App ─── */
+    if (CFG.trackUrl) {
+      try {
+        /* keepalive:true asegura que el request llegue aunque la página cambie */
+        fetch(CFG.trackUrl, {
+          method:    'POST',
+          mode:      'no-cors',   /* Apps Script no devuelve CORS headers en preflight */
+          keepalive: true,
+          body:      JSON.stringify(payload),
+        });
+      } catch (_) { /* silencioso — el portafolio no depende del tracking */ }
+    }
+
+    /* ─── Otros analytics (activar cuando estén listos) ───
     if (window.gtag)       window.gtag('event', name, payload);
     if (window.posthog)    window.posthog.capture(name, payload);
-    if (window.analytics)  window.analytics.track(name, payload);
-    ─────────────────────────────────────────────────── */
+    ──────────────────────────────────────────────────────── */
   }
 
   /* ============================================================
@@ -643,7 +656,7 @@
       const loading = qs('#chat-loading');
       if (loading) { loading.removeAttribute('hidden'); loading.removeAttribute('aria-hidden'); }
 
-      trackEvent('chat_question_submitted', { question_length: text.length });
+      trackEvent('chat_question_submitted', { question: text.slice(0, 300), question_length: text.length });
 
       /* Guardar mensaje del usuario en historial */
       chatHistory.push({ role: 'user', content: text });
