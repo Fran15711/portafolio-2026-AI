@@ -1345,18 +1345,28 @@
   }
 
   function initSobreMiTheme() {
-    const btn = qs('#sobre-mi-theme-btn');
+    const btn     = qs('#sobre-mi-theme-btn');
     const section = qs('.s-sobre-mi');
     if (!btn || !section) return;
 
-    let isLight = false;
+    // Arranca en modo CLARO (is-light ya está en el HTML)
+    let isLight = true;
+
+    function applyTheme() {
+      section.classList.toggle('is-light', isLight);
+      const icon  = btn.querySelector('.sobre-mi__theme-icon');
+      const label = btn.querySelector('.sobre-mi__theme-label');
+      if (icon)  icon.textContent  = isLight ? '🌙' : '☀️';
+      if (label) label.textContent = isLight ? 'Vista oscura' : 'Vista clara';
+      btn.setAttribute('aria-label', isLight ? 'Cambiar a vista oscura' : 'Cambiar a vista clara');
+    }
+
     btn.addEventListener('click', () => {
       isLight = !isLight;
-      section.classList.toggle('is-light', isLight);
-      const icon = btn.querySelector('.sobre-mi__theme-icon');
-      if (icon) icon.textContent = isLight ? '●' : '◐';
-      btn.childNodes[btn.childNodes.length - 1].textContent = isLight ? ' Vista oscura' : ' Vista clara';
+      applyTheme();
     });
+
+    applyTheme(); // garantiza consistencia si JS carga después del HTML
   }
 
   function initLanguageSwitcher() {
@@ -1413,6 +1423,7 @@
     initPopup();
     initShinyButtons();
     initCertSpotlight();
+    initThemeToggle();
     initLanguageSwitcher();
     initSobreMiTheme();
     initModelViewerProgress();
