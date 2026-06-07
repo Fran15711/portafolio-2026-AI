@@ -10,26 +10,27 @@
 :root {
   /* — Fondos — */
     /* ── Fondos — MODO CLARO (default) ── */
-  --bg-base:       #F6F7FB;
-  --bg-surface:    #FFFFFF;
-  --bg-elevated:   #ECEEF4;
-  --bg-overlay:    rgba(246, 247, 251, 0.95);
-  --navbar-bg:     rgba(246, 247, 251, 0.88);
+    /* ── Fondos — MODO OSCURO (default) ── */
+  --bg-base:       #09090B;
+  --bg-surface:    #111113;
+  --bg-elevated:   #1C1C1E;
+  --bg-overlay:    rgba(9, 9, 11, 0.92);
+  --navbar-bg:     rgba(9, 9, 11, 0.88);
 
   /* ── Texto ── */
-  --text-primary:  #0D0D10;
-  --text-secondary:#3A4258;
-  --text-muted:    #676E85;
+  --text-primary:  #FAFAFA;
+  --text-secondary:#A1A1AA;
+  --text-muted:    #52525B;
 
   /* ── Bordes ── */
-  --border-subtle: rgba(0, 0, 0, 0.07);
-  --border-medium: rgba(0, 0, 0, 0.12);
-  --border-strong: rgba(0, 0, 0, 0.22);
+  --border-subtle: rgba(255, 255, 255, 0.06);
+  --border-medium: rgba(255, 255, 255, 0.11);
+  --border-strong: rgba(255, 255, 255, 0.20);
 
   /* ── Acento ── */
-  --accent:        #2563EB;
-  --accent-dim:    rgba(37, 99, 235, 0.10);
-  --accent-border: rgba(37, 99, 235, 0.22);
+  --accent:        #4F8EF7;
+  --accent-dim:    rgba(79, 142, 247, 0.12);
+  --accent-border: rgba(79, 142, 247, 0.22);
 
   /* — Tipografía — */
   --font: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
@@ -55,23 +56,37 @@
   --t-lg:  480ms;
   --t-xl:  640ms;
 }
-/* ── Modo oscuro — activado via data-theme="dark" en <html> ── */
-html[data-theme="dark"] {
-  --bg-base:       #09090B;
-  --bg-surface:    #111113;
-  --bg-elevated:   #1C1C1E;
-  --bg-overlay:    rgba(9, 9, 11, 0.92);
-  --navbar-bg:     rgba(9, 9, 11, 0.88);
-  --text-primary:  #FAFAFA;
-  --text-secondary:#A1A1AA;
-  --text-muted:    #52525B;
-  --border-subtle: rgba(255, 255, 255, 0.06);
-  --border-medium: rgba(255, 255, 255, 0.11);
-  --border-strong: rgba(255, 255, 255, 0.20);
-  --accent:        #4F8EF7;
-  --accent-dim:    rgba(79, 142, 247, 0.12);
-  --accent-border: rgba(79, 142, 247, 0.22);
+/* ── Modo claro — activado via data-theme="light" en <html> ── */
+html[data-theme="light"] {
+    --bg-base:       #FFFFFF;
+  --bg-surface:    #F8F8FA;
+  --bg-elevated:   #ECEEF4;
+  --bg-overlay:    rgba(255, 255, 255, 0.96);
+  --navbar-bg:     rgba(255, 255, 255, 0.90);
+  --text-primary:  #09090B;
+  --text-secondary:#3D4456;
+  --text-muted:    #676E85;
+  --border-subtle: rgba(0, 0, 0, 0.08);
+  --border-medium: rgba(0, 0, 0, 0.13);
+  --border-strong: rgba(0, 0, 0, 0.22);
+  --accent:        #1D5BD4;
+  --accent-dim:    rgba(29, 91, 212, 0.10);
+  --accent-border: rgba(29, 91, 212, 0.22);
 }
+/* s-galga: siempre oscura en ambos temas (sección branded) */
+html[data-theme="light"] .s-galga,
+html[data-theme="light"] .s-galga .section-eyebrow,
+html[data-theme="light"] .s-galga .section-title,
+html[data-theme="light"] .s-galga .galga__lead,
+html[data-theme="light"] .s-galga .galga__kpi-value,
+html[data-theme="light"] .s-galga .galga__kpi-label,
+html[data-theme="light"] .s-galga .galga__link {
+  color: #FAFAFA;
+}
+html[data-theme="light"] .galga__kpi {
+  border-color: rgba(255,255,255,0.10);
+}
+
 
 
 
@@ -2460,26 +2475,58 @@ model-viewer {
 
 /* Language switcher */
 
-/* ── Botón toggle tema (sol/luna) en navbar ── */
-.navbar__theme-btn {
-  background: none;
-  border: 0.5px solid var(--border-subtle);
-  border-radius: 50%;
-  width: 30px;
-  height: 30px;
+/* ── Switch sol/luna en navbar ── */
+.theme-switch {
   display: flex;
   align-items: center;
-  justify-content: center;
+  gap: 7px;
   cursor: pointer;
-  font-size: 14px;
+  user-select: none;
+  flex-shrink: 0;
+  padding: 2px 0;
+}
+.theme-switch__icon {
+  font-size: 13px;
   line-height: 1;
-  transition: background var(--t-xs) var(--ease), border-color var(--t-xs) var(--ease);
+  transition: opacity var(--t-xs) var(--ease);
+}
+.theme-switch__track {
+  width: 36px;
+  height: 20px;
+  background: rgba(255,255,255,0.18);
+  border: 0.5px solid var(--border-medium);
+  border-radius: 10px;
+  position: relative;
+  transition: background var(--t-sm) var(--ease), border-color var(--t-sm) var(--ease);
   flex-shrink: 0;
 }
-.navbar__theme-btn:hover {
-  background: var(--bg-elevated);
-  border-color: var(--border-medium);
+.theme-switch__thumb {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 14px;
+  height: 14px;
+  background: #FAFAFA;
+  border-radius: 50%;
+  transition: transform var(--t-sm) var(--ease), background var(--t-sm) var(--ease);
+  box-shadow: 0 1px 4px rgba(0,0,0,0.4);
 }
+/* Estado: modo claro activo → thumb se mueve a la derecha */
+html[data-theme="light"] .theme-switch__track {
+  background: rgba(0,0,0,0.12);
+  border-color: rgba(0,0,0,0.18);
+}
+html[data-theme="light"] .theme-switch__thumb {
+  transform: translateX(16px);
+  background: #09090B;
+}
+/* Ícono activo vs inactivo */
+.theme-switch__icon--moon  { opacity: 1; }
+.theme-switch__icon--sun   { opacity: 0.45; }
+html[data-theme="light"] .theme-switch__icon--moon { opacity: 0.45; }
+html[data-theme="light"] .theme-switch__icon--sun  { opacity: 1; }
+/* Hover */
+.theme-switch:hover .theme-switch__track { border-color: var(--border-strong); }
 
 .navbar__lang {
   display: flex;
