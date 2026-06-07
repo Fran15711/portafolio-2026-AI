@@ -93,11 +93,16 @@
              data-track="contact_clicked" data-track-label="nav_contacto">Contacto</a></li>
     </ul>
 
-    <!-- Toggle tema global: sol/luna -->
-    <button class="navbar__theme-btn" id="theme-toggle"
-            aria-label="Cambiar a modo oscuro" title="Cambiar tema">
-      <span id="theme-icon" aria-hidden="true">🌙</span>
-    </button>
+    <!-- Switch tema global: 🌙 / ☀️ -->
+    <div class="theme-switch" id="theme-toggle"
+         role="switch" aria-checked="false"
+         tabindex="0" aria-label="Cambiar a modo claro">
+      <span class="theme-switch__icon theme-switch__icon--moon" aria-hidden="true">🌙</span>
+      <div class="theme-switch__track">
+        <div class="theme-switch__thumb"></div>
+      </div>
+      <span class="theme-switch__icon theme-switch__icon--sun" aria-hidden="true">☀️</span>
+    </div>
 
     <!-- Selector de idioma con banderas -->
     <div class="navbar__lang" role="group" aria-label="Idioma">
@@ -641,7 +646,7 @@
           </p>
 
           <nav class="galga__evidence" aria-label="Evidencias del caso Galga">
-            <a href="[PLACEHOLDER — URL reporte anual 2025 fran15711.github.io]"
+            <a href="https://fran15711.github.io/reporteanualgalga2025/"
                class="galga__evidence-link"
                target="_blank" rel="noopener noreferrer"
                data-track="external_link_clicked"
@@ -663,7 +668,7 @@
                       stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
               </svg>
             </a>
-            <a href="[PLACEHOLDER — URL reporte mensual ejemplo fran15711.github.io]"
+            <a href="https://fran15711.github.io/reportemensualetmcolombia/"
                class="galga__evidence-link"
                data-track="external_link_clicked"
                data-track-label="galga_reporte_mensual">
