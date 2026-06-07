@@ -40,9 +40,9 @@
 <div id="splash" class="splash" role="dialog" aria-modal="true" aria-label="Bienvenida">
   <div class="splash__inner">
     <p class="splash__eyebrow" aria-hidden="true">Francisco Noriega · Portafolio</p>
-    <h1 class="splash__greeting">Hola.</h1>
+    <h1 class="splash__greeting">Hola :)</h1>
     <p class="splash__line splash__line--1">
-      Si estás viendo esto, quiero trabajar contigo.
+      Si estás viendo esto, es porque quiero trabajar contigo.
     </p>
     <p class="splash__line splash__line--2">
       Gracias por tu tiempo, tu interés y tu buena intuición.
@@ -53,10 +53,17 @@
     </p>
   </div>
 
-  <div class="splash__progress" aria-hidden="true">
+  <div class="splash__loader" aria-hidden="true">
+    <div class="splash__loader-row">
+      <span class="splash__loader-label">Cargando portafolio</span>
+      <span class="splash__loader-pct" id="splash-counter">0%</span>
+    </div>
     <div class="splash__progress-track">
       <div class="splash__progress-bar" id="splash-progress-bar"></div>
     </div>
+    <p class="splash__loader-note">
+      Versión en construcción — todavía estoy puliendo detalles.
+    </p>
   </div>
 
   <button class="splash__skip" id="splash-skip"
@@ -153,9 +160,9 @@
     <div class="chat__center" id="chat-center">
       <div class="chat__headline">
         <p class="chat__context">Francisco Noriega · Marketing Performance</p>
-        <h1 class="chat__title" id="chat-title">Mi portafolio puede responderte.</h1>
-        <p class="chat__sub">Tengo un asistente entrenado con mis proyectos y resultados.<br>
-          No es un chatbot genérico — es mi representante digital.</p>
+        <h1 class="chat__title" id="chat-title">Pregúntame antes de la entrevista.</h1>
+        <p class="chat__sub">Es una pre-entrevista: pregúntame por mi experiencia, mis proyectos, cómo trabajo o qué hago fuera del trabajo.<br>
+          Te responde una versión mía entrenada con todo lo que he hecho.</p>
         <p class="chat__scroll-invite"><a href="#metricas">O explora el portafolio directamente ↓</a></p>
       </div>
 
@@ -253,8 +260,8 @@
               data-to="26136692"
               data-format="currency"
               data-compact="1"
-              aria-label="26 millones de pesos de revenue atribuido a marketing">$—</span>
-        <span class="metrica__label">Revenue atribuido<br>a marketing</span>
+              aria-label="26 millones de pesos de revenue atribuido a marketing en 2025">$—</span>
+        <span class="metrica__label">Revenue atribuido<br>a marketing · 2025</span>
       </div>
 
       <div class="metrica__sep" aria-hidden="true"></div>
@@ -263,8 +270,8 @@
         <span class="metrica__value"
               data-to="1226"
               data-suffix="%"
-              aria-label="1226 por ciento de ROI en Galga Maquinaria">—</span>
-        <span class="metrica__label">ROI general<br>Galga Maquinaria</span>
+              aria-label="1226 por ciento de ROAS en Galga Maquinaria en 2025">—</span>
+        <span class="metrica__label">ROAS general<br>Galga · 2025</span>
       </div>
 
       <div class="metrica__sep" aria-hidden="true"></div>
@@ -273,8 +280,8 @@
         <span class="metrica__value"
               data-to="64.7"
               data-suffix="x"
-              aria-label="64 punto 7 veces de ROI en categoría Mimaki">—</span>
-        <span class="metrica__label">ROI Mimaki<br>Impresión</span>
+              aria-label="64 punto 7 veces de ROAS en categoría Mimaki">—</span>
+        <span class="metrica__label">ROAS Mimaki<br>Impresión</span>
       </div>
 
       <div class="metrica__sep" aria-hidden="true"></div>
@@ -282,8 +289,8 @@
       <div class="metrica">
         <span class="metrica__value"
               data-to="23"
-              aria-label="23 marcas con evidencias">—</span>
-        <span class="metrica__label">Marcas con<br>evidencias</span>
+              aria-label="23 marcas que puedes revisar">—</span>
+        <span class="metrica__label">Marcas que<br>puedes revisar</span>
       </div>
 
     </div>
@@ -302,9 +309,10 @@
 
       <div class="proyectos__header">
         <p class="section-eyebrow">Proyectos</p>
-        <h2 class="section-title" id="proyectos-title">23 marcas. Todo comprobable.</h2>
+        <h2 class="section-title" id="proyectos-title">23 marcas. No dejes que te las cuente.</h2>
         <p class="section-sub">
-          Selecciona una marca para ver qué se hizo y cómo se puede verificar.
+          Velo por ti mismo: el comercial de radio, la estrategia de comunicación,
+          cada proyecto. Selecciona una marca y revisa la evidencia directa.
         </p>
       </div>
 
@@ -609,15 +617,15 @@
           <span class="galga__kpi-value"
                 data-to="1226"
                 data-suffix="%"
-                aria-label="1226 por ciento de ROI general">—</span>
-          <span class="galga__kpi-label">ROI general</span>
+                aria-label="1226 por ciento de ROAS general anual 2025">—</span>
+          <span class="galga__kpi-label">ROAS general · 2025</span>
         </div>
         <div class="galga__kpi galga__kpi--highlight" role="listitem">
           <span class="galga__kpi-value"
                 data-to="64.7"
                 data-suffix="x"
-                aria-label="ROI de 64 punto 7 veces en Mimaki Impresión">—</span>
-          <span class="galga__kpi-label">ROI Mimaki Impresión</span>
+                aria-label="ROAS de 64 punto 7 veces en Mimaki Impresión">—</span>
+          <span class="galga__kpi-label">ROAS Mimaki Impresión</span>
         </div>
         <div class="galga__kpi" role="listitem">
           <span class="galga__kpi-value"
@@ -635,9 +643,9 @@
         <!-- Columna izquierda: texto + evidencias -->
         <div class="galga__content">
           <p class="galga__description">
-            Revenue de $26.1M MXN atribuido con una inversión de $1.8M.
-            Un ROI de 1,226% que incluye una categoría estrella
-            (Mimaki Impresión) con retorno de 64.7x.
+            En 2025 atribuí $26.1M MXN en revenue con una inversión de $1.8M:
+            un ROAS general de 1,226%, con una categoría estrella
+            (Mimaki Impresión) que llegó a 64.7x.
           </p>
           <p class="galga__description">
             El trabajo incluyó SEO técnico, campañas de búsqueda,
@@ -651,7 +659,7 @@
                onclick="event.preventDefault(); openPopup(this.href)"
                data-track="external_link_clicked"
                data-track-label="galga_reporte_anual">
-              Reporte anual 2025
+              Aquí lo puedes ver — reporte anual 2025
               <svg width="10" height="10" viewBox="0 0 10 10" fill="none" aria-hidden="true">
                 <path d="M1.5 8.5L8.5 1.5M8.5 1.5H3.5M8.5 1.5V6.5"
                       stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
@@ -686,7 +694,7 @@
         <div class="galga__model-wrap">
           <p class="galga__model-caption">
             No solo en slides.<br>
-            El equipo que generó el ROI de 64.7x.
+            El equipo que generó el ROAS de 64.7x.
           </p>
 
           <model-viewer
@@ -745,11 +753,11 @@
       <div class="experiencia__header">
         <p class="section-eyebrow">Trayectoria</p>
         <h2 class="section-title" id="experiencia-title">
-          Cuatro etapas.<br>Tres cartas que lo verifican.
+          Cuatro etapas.<br>Las empresas que me recomiendan.
         </h2>
         <p class="section-sub">
-          Las empresas donde trabajé dejaron evidencia escrita.
-          Cada carta abre en pantalla y es verificable.
+          No es mi palabra contra el mundo: las empresas donde trabajé
+          dejaron su recomendación por escrito. Cada carta abre aquí mismo.
         </p>
       </div>
 
@@ -766,7 +774,7 @@
           <p class="exp-letter__role">Marketing Performance / Growth</p>
           <a href="#galga" class="exp-letter__cta"
              data-track="nav_clicked" data-track-label="exp_to_galga">
-            Ver case study — $26.1M MXN en revenue atribuido →
+            Ver case study — $26.1M MXN atribuido en 2025 →
           </a>
         </div>
 
@@ -822,8 +830,11 @@
 
       <div class="certificaciones__header">
         <p class="section-eyebrow">Certificaciones</p>
-        <h2 class="section-title" id="certs-title">Verificables. Todas.</h2>
-        <p class="section-sub">Cada botón lleva a la credencial original.</p>
+        <h2 class="section-title" id="certs-title">No solo aprendí en la cancha.</h2>
+        <p class="section-sub">
+          Lo empírico está bien, pero también me formé. Cada botón
+          lleva a la credencial original.
+        </p>
       </div>
 
       <!-- Certificaciones: efecto "placa brillante" con canvas (igual que portafolio original) -->
@@ -922,11 +933,11 @@
 
         <div class="sobre-mi__text-col">
           <p class="sobre-mi__lead">
-            No te voy a decir que soy apasionado del marketing.
-            Hay evidencia para eso.
+            Lo mío no es decir que amo el marketing.
+            Es dejar que el trabajo lo demuestre.
           </p>
           <p class="sobre-mi__para">
-            Trabajo conectando estrategia, ejecución y datos.
+            Conecto estrategia, ejecución y datos.
             Sin ego de canales: uso el que funciona.
           </p>
         </div>
@@ -934,7 +945,7 @@
         <div class="sobre-mi__pillars" role="list" aria-label="Principios de trabajo">
           <div class="pillar" role="listitem">
             <span class="pillar__n" aria-hidden="true">01</span>
-            <p class="pillar__text">Trabajo con evidencia. Si no hay datos, digo que no hay datos.</p>
+            <p class="pillar__text">Trabajo con evidencia. Si no hay datos, los busco antes de empezar. No me invento cosas.</p>
           </div>
           <div class="pillar" role="listitem">
             <span class="pillar__n" aria-hidden="true">02</span>
