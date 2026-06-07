@@ -1312,6 +1312,44 @@
    * initLanguageSwitcher — Banderitas ES/EN
    * ============================================================ */
 
+
+  /* ============================================================
+   * initThemeToggle — Switch sol/luna (oscuro por defecto)
+   * data-theme="light" activa modo claro en <html>
+   * Persiste en localStorage("fn-theme")
+   * ============================================================ */
+  function initThemeToggle() {
+    const sw = qs('#theme-toggle');
+    if (!sw) return;
+
+    // Default: oscuro. Si guardó "light", aplicar claro.
+    let isLight = localStorage.getItem('fn-theme') === 'light';
+
+    function apply() {
+      if (isLight) {
+        document.documentElement.setAttribute('data-theme', 'light');
+      } else {
+        document.documentElement.removeAttribute('data-theme');
+      }
+      sw.setAttribute('aria-checked', String(isLight));
+      sw.setAttribute('aria-label', isLight ? 'Cambiar a modo oscuro' : 'Cambiar a modo claro');
+    }
+
+    // Click o teclado (Space/Enter)
+    function toggle() {
+      isLight = !isLight;
+      localStorage.setItem('fn-theme', isLight ? 'light' : 'dark');
+      apply();
+    }
+
+    sw.addEventListener('click', toggle);
+    sw.addEventListener('keydown', (e) => {
+      if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); toggle(); }
+    });
+
+    apply(); // aplicar estado inicial (antes del primer render)
+  }
+
   /* ============================================================
    * initSobreMiTheme — Toggle claro/oscuro para "Cómo trabajo"
    * ============================================================ */
