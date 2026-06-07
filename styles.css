@@ -9,25 +9,27 @@
    ================================================================ */
 :root {
   /* — Fondos — */
-  --bg-base:       #09090B;
-  --bg-surface:    #111113;
-  --bg-elevated:   #1C1C1E;
-  --bg-overlay:    rgba(9, 9, 11, 0.90);
+    /* ── Fondos — MODO CLARO (default) ── */
+  --bg-base:       #F6F7FB;
+  --bg-surface:    #FFFFFF;
+  --bg-elevated:   #ECEEF4;
+  --bg-overlay:    rgba(246, 247, 251, 0.95);
+  --navbar-bg:     rgba(246, 247, 251, 0.88);
 
-  /* — Texto — */
-  --text-primary:  #FAFAFA;
-  --text-secondary:#A1A1AA;
-  --text-muted:    #52525B;
+  /* ── Texto ── */
+  --text-primary:  #0D0D10;
+  --text-secondary:#3A4258;
+  --text-muted:    #676E85;
 
-  /* — Bordes — */
-  --border-subtle: rgba(255, 255, 255, 0.06);
-  --border-medium: rgba(255, 255, 255, 0.11);
-  --border-strong: rgba(255, 255, 255, 0.20);
+  /* ── Bordes ── */
+  --border-subtle: rgba(0, 0, 0, 0.07);
+  --border-medium: rgba(0, 0, 0, 0.12);
+  --border-strong: rgba(0, 0, 0, 0.22);
 
-  /* — Acento — */
-  --accent:        #4F8EF7;
-  --accent-dim:    rgba(79, 142, 247, 0.12);
-  --accent-border: rgba(79, 142, 247, 0.22);
+  /* ── Acento ── */
+  --accent:        #2563EB;
+  --accent-dim:    rgba(37, 99, 235, 0.10);
+  --accent-border: rgba(37, 99, 235, 0.22);
 
   /* — Tipografía — */
   --font: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
@@ -53,6 +55,25 @@
   --t-lg:  480ms;
   --t-xl:  640ms;
 }
+/* ── Modo oscuro — activado via data-theme="dark" en <html> ── */
+html[data-theme="dark"] {
+  --bg-base:       #09090B;
+  --bg-surface:    #111113;
+  --bg-elevated:   #1C1C1E;
+  --bg-overlay:    rgba(9, 9, 11, 0.92);
+  --navbar-bg:     rgba(9, 9, 11, 0.88);
+  --text-primary:  #FAFAFA;
+  --text-secondary:#A1A1AA;
+  --text-muted:    #52525B;
+  --border-subtle: rgba(255, 255, 255, 0.06);
+  --border-medium: rgba(255, 255, 255, 0.11);
+  --border-strong: rgba(255, 255, 255, 0.20);
+  --accent:        #4F8EF7;
+  --accent-dim:    rgba(79, 142, 247, 0.12);
+  --accent-border: rgba(79, 142, 247, 0.22);
+}
+
+
 
 
 /* ================================================================
@@ -174,6 +195,7 @@ button {
   position: fixed;
   inset: 0;
   z-index: 1000;
+  background: var(--bg-base);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -309,7 +331,7 @@ button {
               backdrop-filter var(--t-md) var(--ease);
 }
 .navbar--scrolled {
-  background: rgba(9, 9, 11, 0.88);
+  background: var(--navbar-bg);
   backdrop-filter: blur(20px) saturate(180%);
   -webkit-backdrop-filter: blur(20px) saturate(180%);
   border-bottom: 0.5px solid var(--border-subtle);
@@ -1215,9 +1237,11 @@ button {
    12. GALGA — case study principal
    ================================================================ */
 .s-galga {
-  background: var(--bg-surface);
-  border-top: 0.5px solid var(--border-subtle);
-  border-bottom: 0.5px solid var(--border-subtle);
+  /* Sección branded — siempre oscura en ambos temas */
+  background: linear-gradient(160deg, #080c18 0%, #0d1427 55%, #111d3a 100%);
+  color: #FAFAFA;
+  border-top: none;
+  border-bottom: none;
 }
 .galga__inner {
   max-width: var(--max-w);
@@ -2435,6 +2459,28 @@ model-viewer {
 .chat__scroll-invite a:hover { color: var(--text-secondary); }
 
 /* Language switcher */
+
+/* ── Botón toggle tema (sol/luna) en navbar ── */
+.navbar__theme-btn {
+  background: none;
+  border: 0.5px solid var(--border-subtle);
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 14px;
+  line-height: 1;
+  transition: background var(--t-xs) var(--ease), border-color var(--t-xs) var(--ease);
+  flex-shrink: 0;
+}
+.navbar__theme-btn:hover {
+  background: var(--bg-elevated);
+  border-color: var(--border-medium);
+}
+
 .navbar__lang {
   display: flex;
   align-items: center;
@@ -2457,8 +2503,15 @@ model-viewer {
   transition: all var(--t-sm) var(--ease);
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: 6px;
   white-space: nowrap;
+}
+.navbar__flag {
+  display: block;
+  border-radius: 2px;
+  flex-shrink: 0;
+  object-fit: cover;
+  box-shadow: 0 0 0 0.5px rgba(255,255,255,0.15);
 }
 .navbar__lang-btn.is-active {
   background: var(--bg-elevated);
@@ -2472,27 +2525,17 @@ model-viewer {
   .navbar__lang { display: none; }
 }
 
-/* Theme toggle cómo trabajo */
-.sobre-mi__theme-btn {
-  background: var(--bg-elevated);
-  border: 0.5px solid var(--border-subtle);
-  border-radius: 20px;
-  padding: 6px 14px;
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 0.05em;
-  color: var(--text-muted);
-  cursor: pointer;
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  transition: all var(--t-sm) var(--ease);
-  margin-top: 16px;
-}
-.sobre-mi__theme-btn:hover {
+/* Theme toggle de sobre-mi eliminado — toggle global en navbar */
+/* En modo claro el botón hereda los colores claros */
+  background: rgba(255,255,255,0.8);
+  border-color: rgba(16,19,29,0.15);
+  color: #40485a;
   border-color: var(--border-medium);
   color: var(--text-secondary);
-}
+  background: rgba(255,255,255,1);
+  color: #10131d;
+  border-color: var(--border-medium);
+  color: var(--text-secondary);
 /* Vista clara para la sección */
 .s-sobre-mi.is-light {
   background: #f5f7fb;
@@ -2519,40 +2562,45 @@ model-viewer {
 .s-sobre-mi.is-light .pillar {
   border-color: rgba(16,19,29,0.1);
 }
-.s-sobre-mi.is-light .sobre-mi__theme-btn {
   background: rgba(255,255,255,0.8);
   border-color: rgba(16,19,29,0.15);
   color: #40485a;
-}
 
 /* Model viewer progress bar */
 .galga__model-progress-bar {
   position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  background: rgba(0,0,0,0.55);
+  border-radius: 12px;
+  padding: 20px;
+}
+.galga__model-progress-fill-track {
+  width: 60%;
+  max-width: 200px;
   height: 3px;
-  background: rgba(255,255,255,0.1);
-  border-radius: 0 0 12px 12px;
+  background: rgba(255,255,255,0.15);
+  border-radius: 2px;
   overflow: hidden;
 }
 .galga__model-progress-fill {
   height: 100%;
-  background: var(--accent);
+  background: #fff;
   width: 0%;
-  transition: width 200ms ease;
+  transition: width 300ms ease;
   border-radius: inherit;
 }
 .galga__model-progress-label {
-  position: absolute;
-  bottom: 12px;
-  left: 0;
-  right: 0;
-  text-align: center;
-  font-size: 10px;
-  letter-spacing: 0.07em;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: var(--text-muted);
+  color: rgba(255,255,255,0.85);
+  text-align: center;
 }
 
 /* ── Model viewer cover image ── */
