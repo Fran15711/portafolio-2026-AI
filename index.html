@@ -1,0 +1,1091 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Portafolio de Francisco Noriega — Marketing Performance, Growth y Estrategia de Contenidos. Evidencias y resultados comprobables.">
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="Francisco Noriega · Marketing">
+  <meta property="og:description" content="Portafolio con evidencias y resultados comprobables de estrategias y proyectos de marketing.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="[PLACEHOLDER — URL definitiva en Vercel]">
+  <meta property="og:image" content="[PLACEHOLDER — URL de imagen og 1200×630]">
+  <meta name="theme-color" content="#09090B">
+
+  <title>Francisco Noriega · Marketing</title>
+
+  <!-- Tipografía -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+  <!-- Model Viewer (para el GLB de Galga en la sección case study) -->
+  <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
+
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<!-- ============================================================
+     CURSOR TRAIL — canvas propio, gestionado por script.js
+============================================================ -->
+<canvas id="cursor-trail" aria-hidden="true"></canvas>
+
+<!-- ============================================================
+     SPLASH — pantalla de bienvenida temporal
+     Visible por defecto. El JS la oculta tras 3.2s o al hacer click.
+     noscript: si no hay JS, se oculta y el sitio aparece directamente.
+============================================================ -->
+<div id="splash" class="splash" role="dialog" aria-modal="true" aria-label="Bienvenida">
+  <div class="splash__inner">
+    <p class="splash__eyebrow" aria-hidden="true">Francisco Noriega · Portafolio</p>
+    <h1 class="splash__greeting">Hola.</h1>
+    <p class="splash__line splash__line--1">
+      Si estás viendo esto, quiero trabajar contigo.
+    </p>
+    <p class="splash__line splash__line--2">
+      Gracias por tu tiempo, tu interés y tu buena intuición.
+    </p>
+    <p class="splash__line splash__line--3">
+      Este portafolio reúne evidencias y resultados de estrategias<br>
+      y proyectos de los que he sido responsable.
+    </p>
+  </div>
+
+  <div class="splash__progress" aria-hidden="true">
+    <div class="splash__progress-track">
+      <div class="splash__progress-bar" id="splash-progress-bar"></div>
+    </div>
+  </div>
+
+  <button class="splash__skip" id="splash-skip"
+          aria-label="Saltar introducción y entrar al portafolio"
+          data-track="welcome_skipped">
+    Saltar
+  </button>
+</div>
+
+<noscript>
+  <style>
+    #splash { display: none !important; }
+    #site   { opacity: 1 !important; visibility: visible !important; }
+  </style>
+</noscript>
+
+<!-- ============================================================
+     NAVBAR — fija, aparece visible con scroll
+============================================================ -->
+<nav id="navbar" class="navbar" aria-label="Navegación principal">
+  <div class="navbar__inner">
+    <a href="#chat" class="navbar__brand" aria-label="Ir al inicio">FN</a>
+
+    <ul class="navbar__links" id="navbar-links" role="list">
+      <li><a href="#proyectos" class="navbar__link"
+             data-track="nav_clicked" data-track-label="nav_proyectos">Proyectos</a></li>
+      <li><a href="#galga" class="navbar__link"
+             data-track="nav_clicked" data-track-label="nav_galga">Galga</a></li>
+      <li><a href="#experiencia" class="navbar__link"
+             data-track="nav_clicked" data-track-label="nav_experiencia">Experiencia</a></li>
+      <li><a href="#certificaciones" class="navbar__link"
+             data-track="nav_clicked" data-track-label="nav_certs">Certificaciones</a></li>
+      <li><a href="#contacto" class="navbar__link navbar__link--cta"
+             data-track="contact_clicked" data-track-label="nav_contacto">Contacto</a></li>
+    </ul>
+
+    <!-- Selector de idioma con banderas -->
+    <div class="navbar__lang" role="group" aria-label="Idioma">
+      <button class="navbar__lang-btn is-active" id="lang-btn-es"
+              aria-label="Ver en español" aria-pressed="true">
+        🇲🇽 ES
+      </button>
+      <button class="navbar__lang-btn" id="lang-btn-en"
+              aria-label="View in English" aria-pressed="false">
+        🇺🇸 EN
+      </button>
+    </div>
+
+    <button class="navbar__trigger" id="navbar-trigger"
+            aria-label="Abrir menú" aria-expanded="false" aria-controls="navbar-links">
+      <span class="navbar__burger"></span>
+      <span class="navbar__burger"></span>
+    </button>
+  </div>
+</nav>
+
+<!-- ============================================================
+     SITE — contenido principal
+     Oculto hasta que el splash termina (JS controla la transición).
+============================================================ -->
+<main id="site" class="site" aria-label="Contenido principal">
+
+  <!-- ==========================================
+       1 · CHAT — hero / asistente IA
+  ========================================== -->
+  <section id="chat" class="s-chat" data-track-section="chat"
+           aria-labelledby="chat-title">
+
+    <!-- Área de conversación (vacía al inicio) -->
+    <div class="chat__conversation" id="chat-conversation"
+         role="log" aria-live="polite" aria-label="Conversación con el asistente"
+         aria-atomic="false">
+      <!-- Los mensajes los inyecta script.js -->
+    </div>
+
+    <!-- Centro: headline + typewriter (se oculta cuando hay mensajes) -->
+    <div class="chat__center" id="chat-center">
+      <div class="chat__headline">
+        <p class="chat__context">Francisco Noriega · Marketing Performance</p>
+        <h1 class="chat__title" id="chat-title">Mi portafolio puede responderte.</h1>
+        <p class="chat__sub">Tengo un asistente entrenado con mis proyectos y resultados.<br>
+          No es un chatbot genérico — es mi representante digital.</p>
+        <p class="chat__scroll-invite"><a href="#metricas">O explora el portafolio directamente ↓</a></p>
+      </div>
+
+      <!-- Typewriter: cicla sugerencias de preguntas -->
+      <div class="chat__typewriter" id="chat-typewriter" aria-hidden="true">
+        <span class="chat__typewriter-dot" aria-hidden="true"></span>
+        <span id="typewriter-text"></span>
+        <span class="chat__cursor" aria-hidden="true"></span>
+      </div>
+    </div>
+
+    <!-- Input + chips (siempre visible en la parte inferior) -->
+    <div class="chat__input-area" id="chat-input-area">
+
+      <!-- Chips de sugerencias rápidas -->
+      <div class="chat__chips" id="chat-chips" role="group" aria-label="Preguntas sugeridas">
+        <button class="chat__chip"
+                data-question="¿Qué proyectos puede comprobar Francisco?"
+                data-track="suggested_prompt_clicked"
+                data-track-label="comprobar_proyectos">
+          ¿Qué puede comprobar?
+        </button>
+        <button class="chat__chip"
+                data-question="¿Cómo aplica inteligencia artificial en marketing?"
+                data-track="suggested_prompt_clicked"
+                data-track-label="ia_marketing">
+          ¿Cómo usa IA?
+        </button>
+        <button class="chat__chip"
+                data-question="¿Cuáles son los resultados de GalgaX y cuánto es el ROI?"
+                data-track="suggested_prompt_clicked"
+                data-track-label="galga_roi">
+          ROI en Galga →
+        </button>
+      </div>
+
+      <!-- Campo de texto -->
+      <div class="chat__form" role="search" aria-label="Pregunta al asistente">
+        <textarea
+          id="chat-input"
+          class="chat__textarea"
+          placeholder="Escribe tu pregunta…"
+          rows="1"
+          maxlength="300"
+          aria-label="Escribe tu pregunta"
+          autocomplete="off"
+          spellcheck="false"
+          data-track="chat_focus"
+        ></textarea>
+        <button id="chat-send" class="chat__send"
+                aria-label="Enviar pregunta"
+                data-track="chat_question_submitted"
+                disabled>
+          <svg width="15" height="15" viewBox="0 0 15 15" fill="none" aria-hidden="true">
+            <path d="M7.5 1.5v12M2 6l5.5-4.5L13 6"
+                  stroke="currentColor" stroke-width="1.4"
+                  stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+      </div>
+
+      <!-- Estado de carga -->
+      <div class="chat__loading" id="chat-loading" hidden
+           role="status" aria-label="El asistente está respondiendo">
+        <span></span><span></span><span></span>
+      </div>
+
+      <!-- Disclaimer -->
+      <p class="chat__disclaimer">
+        El asistente puede cometer errores. Para información exacta, revisa las evidencias
+        o <a href="#contacto" data-track="contact_clicked"
+              data-track-label="chat_disclaimer_contact">escríbeme directamente</a>.
+      </p>
+    </div>
+
+    <!-- Flecha de scroll hacia abajo -->
+    <a href="#metricas" class="chat__scroll-hint" aria-label="Ver más contenido">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+        <path d="M2 5l6 6 6-6"
+              stroke="currentColor" stroke-width="1.3"
+              stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </a>
+  </section>
+
+  <!-- ==========================================
+       2 · MÉTRICAS — barra de números clave
+  ========================================== -->
+  <section id="metricas" class="s-metricas" data-track-section="metricas"
+           aria-label="Métricas principales">
+    <div class="metricas__inner">
+
+      <div class="metrica">
+        <span class="metrica__value"
+              data-to="26136692"
+              data-format="currency"
+              data-compact="1"
+              aria-label="26 millones de pesos de revenue atribuido a marketing">$—</span>
+        <span class="metrica__label">Revenue atribuido<br>a marketing</span>
+      </div>
+
+      <div class="metrica__sep" aria-hidden="true"></div>
+
+      <div class="metrica">
+        <span class="metrica__value"
+              data-to="1226"
+              data-suffix="%"
+              aria-label="1226 por ciento de ROI en Galga Maquinaria">—</span>
+        <span class="metrica__label">ROI general<br>Galga Maquinaria</span>
+      </div>
+
+      <div class="metrica__sep" aria-hidden="true"></div>
+
+      <div class="metrica">
+        <span class="metrica__value"
+              data-to="64.7"
+              data-suffix="x"
+              aria-label="64 punto 7 veces de ROI en categoría Mimaki">—</span>
+        <span class="metrica__label">ROI Mimaki<br>Impresión</span>
+      </div>
+
+      <div class="metrica__sep" aria-hidden="true"></div>
+
+      <div class="metrica">
+        <span class="metrica__value"
+              data-to="23"
+              aria-label="23 marcas con evidencias">—</span>
+        <span class="metrica__label">Marcas con<br>evidencias</span>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ==========================================
+       3 · PROYECTOS — hexágonos + evidencias
+  ========================================== -->
+  <section id="proyectos" class="s-proyectos" data-track-section="proyectos"
+           aria-labelledby="proyectos-title">
+
+    <!-- Capa de ambiente: el fondo cambia por marca seleccionada -->
+    <div class="proyectos__ambient" id="proyectos-ambient" aria-hidden="true"></div>
+
+    <div class="proyectos__inner">
+
+      <div class="proyectos__header">
+        <p class="section-eyebrow">Proyectos</p>
+        <h2 class="section-title" id="proyectos-title">23 marcas. Todo comprobable.</h2>
+        <p class="section-sub">
+          Selecciona una marca para ver qué se hizo y cómo se puede verificar.
+        </p>
+      </div>
+
+      <!-- Filtros -->
+      <div class="proyectos__filters" role="group" aria-label="Filtrar proyectos">
+        <div class="filter-group">
+          <label for="filter-sector" class="filter-label">Sector</label>
+          <select id="filter-sector" class="filter-select"
+                  aria-label="Filtrar por sector de la empresa">
+            <option value="">Todos los sectores</option>
+            <option value="seguridad">Seguridad</option>
+            <option value="ropa">Ropa y calzado</option>
+            <option value="manufactura">Manufactura</option>
+            <option value="alimentos">Alimentos y bebidas</option>
+            <option value="inmobiliario">Inmobiliario</option>
+            <option value="agencia">Agencia de marketing</option>
+            <option value="turismo">Turismo y hospedaje</option>
+            <option value="retail">Plaza comercial</option>
+            <option value="salud">Salud</option>
+            <option value="arrendamiento">Arrendamiento</option>
+            <option value="construccion">Materiales y construcción</option>
+            <option value="arte">Arte y decoración</option>
+            <option value="maquinaria">Maquinaria</option>
+            <option value="agroalimentario">Agroalimentario</option>
+          </select>
+        </div>
+
+        <div class="filter-group">
+          <label for="filter-type" class="filter-label">Tipo de trabajo</label>
+          <select id="filter-type" class="filter-select"
+                  aria-label="Filtrar por tipo de trabajo">
+            <option value="">Todos los tipos</option>
+            <option value="Posts">Posts / Redes sociales</option>
+            <option value="Blog">Blog SEO</option>
+            <option value="Video">Video</option>
+            <option value="Página web - E-commerce">Página web</option>
+            <option value="Presentación de Ventas">Presentación</option>
+            <option value="Estrategia de Comunicación">Estrategia</option>
+            <option value="Investigación de mercado">Investigación</option>
+            <option value="Mailing">Mailing</option>
+            <option value="Naming">Naming</option>
+            <option value="Fotografía">Fotografía</option>
+            <option value="Campañas con Influencers">Influencers</option>
+            <option value="Expo">Expo</option>
+            <option value="Endomarketing">Endomarketing</option>
+            <option value="comercial de radio">Comercial de radio</option>
+            <option value="Mistery Shopper">Mistery Shopper</option>
+          </select>
+        </div>
+
+        <button class="filter-reset" id="filter-reset"
+                aria-label="Limpiar todos los filtros">
+          Limpiar
+        </button>
+      </div>
+
+      <!-- Panal de hexágonos
+           data-index corresponde al índice en el array hexData[] de script.js
+           data-sector se usa para el filtro de sector
+           Orden: fila1(5) fila2(4) fila3(5) fila4(4) fila5(5) = 23
+      -->
+      <div class="hex-panal" id="hex-panal"
+           role="list" aria-label="Galería de marcas y proyectos">
+
+        <!-- Fila 1 — 5 hexágonos -->
+        <div class="hex-row" role="presentation">
+          <div class="hex-wrap" data-index="0">
+            <div class="hex" role="listitem" data-sector="seguridad"
+                 tabindex="0" aria-label="Centinela — ver proyectos y evidencias">
+              <img class="hex__img" loading="lazy" alt=""
+                   src="https://raw.githubusercontent.com/Fran15711/prueba1/refs/heads/main/loguin%20centinela.png">
+              <span class="hex__name">Centinela</span>
+            </div>
+          </div>
+          <div class="hex-wrap" data-index="1">
+            <div class="hex" role="listitem" data-sector="ropa"
+                 tabindex="0" aria-label="Denver Icy — ver proyectos y evidencias">
+              <img class="hex__img" loading="lazy" alt=""
+                   src="https://raw.githubusercontent.com/Fran15711/prueba1/refs/heads/main/LOGO_DENVER_BLANCO_Y_DORADO%20imagotipo.png">
+              <span class="hex__name">Denver Icy</span>
+            </div>
+          </div>
+          <div class="hex-wrap" data-index="2">
+            <div class="hex" role="listitem" data-sector="manufactura"
+                 tabindex="0" aria-label="Evacolors — ver proyectos y evidencias">
+              <img class="hex__img" loading="lazy" alt=""
+                   src="https://raw.githubusercontent.com/Fran15711/prueba1/refs/heads/main/imagotipo%20fabricante-de-espuma-eva-header-logo.png">
+              <span class="hex__name">Evacolors</span>
+            </div>
+          </div>
+          <div class="hex-wrap" data-index="3">
+            <div class="hex" role="listitem" data-sector="alimentos"
+                 tabindex="0" aria-label="Italian Coffee León — ver proyectos y evidencias">
+              <img class="hex__img" loading="lazy" alt=""
+                   src="https://raw.githubusercontent.com/Fran15711/prueba1/refs/heads/main/avqzgkag0.png">
+              <span class="hex__name">Italian Coffee</span>
+            </div>
+          </div>
+          <div class="hex-wrap" data-index="4">
+            <div class="hex" role="listitem" data-sector="alimentos"
+                 tabindex="0" aria-label="Chimirica — ver proyectos y evidencias">
+              <img class="hex__img" loading="lazy" alt=""
+                   src="https://raw.githubusercontent.com/Fran15711/prueba1/refs/heads/main/logo%20chimirica.png">
+              <span class="hex__name">Chimirica</span>
+            </div>
+          </div>
+        </div><!-- /hex-row 1 -->
+
+        <!-- Fila 2 — 4 hexágonos (offset) -->
+        <div class="hex-row hex-row--offset" role="presentation">
+          <div class="hex-wrap" data-index="5">
+            <div class="hex" role="listitem" data-sector="ropa"
+                 tabindex="0" aria-label="Mex7 Boots — ver proyectos y evidencias">
+              <img class="hex__img" loading="lazy" alt=""
+                   src="https://raw.githubusercontent.com/Fran15711/prueba1/refs/heads/main/logo%20mex7%20boots.png">
+              <span class="hex__name">Mex7 Boots</span>
+            </div>
+          </div>
+          <div class="hex-wrap" data-index="6">
+            <div class="hex" role="listitem" data-sector="inmobiliario"
+                 tabindex="0" aria-label="Bikia — ver proyectos y evidencias">
+              <img class="hex__img" loading="lazy" alt=""
+                   src="https://raw.githubusercontent.com/Fran15711/prueba1/refs/heads/main/logo%20bikia.png">
+              <span class="hex__name">Bikia</span>
+            </div>
+          </div>
+          <div class="hex-wrap" data-index="7">
+            <div class="hex" role="listitem" data-sector="agencia"
+                 tabindex="0" aria-label="Mercadoctor — ver proyectos y evidencias">
+              <img class="hex__img" loading="lazy" alt=""
+                   src="https://raw.githubusercontent.com/Fran15711/prueba1/refs/heads/main/media%20(6)%202.png">
+              <span class="hex__name">Mercadoctor</span>
+            </div>
+          </div>
+          <div class="hex-wrap" data-index="8">
+            <div class="hex" role="listitem" data-sector="turismo"
+                 tabindex="0" aria-label="Ecoparque Providencia — ver proyectos y evidencias">
+              <img class="hex__img" loading="lazy" alt=""
+                   src="https://raw.githubusercontent.com/Fran15711/prueba1/refs/heads/main/logo%20ecoparque%20providencia.png">
+              <span class="hex__name">Ecoparque Prov.</span>
+            </div>
+          </div>
+        </div><!-- /hex-row 2 -->
+
+        <!-- Fila 3 — 5 hexágonos -->
+        <div class="hex-row" role="presentation">
+          <div class="hex-wrap" data-index="9">
+            <div class="hex" role="listitem" data-sector="retail"
+                 tabindex="0" aria-label="Plaza Norte — ver proyectos y evidencias">
+              <img class="hex__img" loading="lazy" alt=""
+                   src="https://raw.githubusercontent.com/Fran15711/prueba1/refs/heads/main/loguin.png">
+              <span class="hex__name">Plaza Norte</span>
+            </div>
+          </div>
+          <div class="hex-wrap" data-index="10">
+            <div class="hex" role="listitem" data-sector="salud"
+                 tabindex="0" aria-label="Wellness No Brand — ver proyectos y evidencias">
+              <img class="hex__img" loading="lazy" alt=""
+                   src="https://raw.githubusercontent.com/Fran15711/prueba1/refs/heads/main/media%20(1).png">
+              <span class="hex__name">Wellness NB</span>
+            </div>
+          </div>
+          <div class="hex-wrap" data-index="11">
+            <div class="hex" role="listitem" data-sector="arrendamiento"
+                 tabindex="0" aria-label="Rocarent — ver proyectos y evidencias">
+              <img class="hex__img" loading="lazy" alt=""
+                   src="https://raw.githubusercontent.com/Fran15711/prueba1/refs/heads/main/ROCARENT%20LOGO.png">
+              <span class="hex__name">Rocarent</span>
+            </div>
+          </div>
+          <div class="hex-wrap" data-index="12">
+            <div class="hex" role="listitem" data-sector="retail"
+                 tabindex="0" aria-label="Paseo Morelos — ver proyectos y evidencias">
+              <img class="hex__img" loading="lazy" alt=""
+                   src="https://raw.githubusercontent.com/Fran15711/prueba1/refs/heads/main/PASEO%20MORELOS.png">
+              <span class="hex__name">Paseo Morelos</span>
+            </div>
+          </div>
+          <div class="hex-wrap" data-index="13">
+            <div class="hex" role="listitem" data-sector="construccion"
+                 tabindex="0" aria-label="Acabados del Pacífico — ver proyectos y evidencias">
+              <img class="hex__img" loading="lazy" alt=""
+                   src="https://raw.githubusercontent.com/Fran15711/prueba1/refs/heads/main/244170509_1976705719155936_2401628594957245460_n.png">
+              <span class="hex__name">Acabados Pac.</span>
+            </div>
+          </div>
+        </div><!-- /hex-row 3 -->
+
+        <!-- Fila 4 — 4 hexágonos (offset) -->
+        <div class="hex-row hex-row--offset" role="presentation">
+          <div class="hex-wrap" data-index="14">
+            <div class="hex" role="listitem" data-sector="turismo"
+                 tabindex="0" aria-label="Campestre Providencia — ver proyectos y evidencias">
+              <img class="hex__img" loading="lazy" alt=""
+                   src="https://raw.githubusercontent.com/Fran15711/prueba1/refs/heads/main/logo-PRV.png">
+              <span class="hex__name">Campestre Prov.</span>
+            </div>
+          </div>
+          <div class="hex-wrap" data-index="15">
+            <div class="hex" role="listitem" data-sector="arte"
+                 tabindex="0" aria-label="11inks — ver proyectos y evidencias">
+              <img class="hex__img" loading="lazy" alt=""
+                   src="https://raw.githubusercontent.com/Fran15711/prueba1/refs/heads/main/imagotipo%2011%20inks.png">
+              <span class="hex__name">11inks</span>
+            </div>
+          </div>
+          <div class="hex-wrap" data-index="16">
+            <div class="hex" role="listitem" data-sector="maquinaria"
+                 tabindex="0" aria-label="Suma Lift — ver proyectos y evidencias">
+              <img class="hex__img" loading="lazy" alt=""
+                   src="https://raw.githubusercontent.com/Fran15711/prueba1/refs/heads/main/media%20(3).png">
+              <span class="hex__name">Suma Lift</span>
+            </div>
+          </div>
+          <div class="hex-wrap" data-index="17">
+            <div class="hex" role="listitem" data-sector="agroalimentario"
+                 tabindex="0" aria-label="Agro Guanajuato — ver proyectos y evidencias">
+              <img class="hex__img" loading="lazy" alt=""
+                   src="https://raw.githubusercontent.com/Fran15711/prueba1/refs/heads/main/logo-agro.png">
+              <span class="hex__name">Agro Guanajuato</span>
+            </div>
+          </div>
+        </div><!-- /hex-row 4 -->
+
+        <!-- Fila 5 — 5 hexágonos -->
+        <div class="hex-row" role="presentation">
+          <div class="hex-wrap" data-index="18">
+            <div class="hex" role="listitem" data-sector="maquinaria"
+                 tabindex="0" aria-label="Tortigama — ver proyectos y evidencias">
+              <img class="hex__img" loading="lazy" alt=""
+                   src="https://raw.githubusercontent.com/Fran15711/prueba1/refs/heads/main/media%20(4).png">
+              <span class="hex__name">Tortigama</span>
+            </div>
+          </div>
+          <div class="hex-wrap" data-index="19">
+            <div class="hex" role="listitem" data-sector="inmobiliario"
+                 tabindex="0" aria-label="Vallua — ver proyectos y evidencias">
+              <img class="hex__img" loading="lazy" alt=""
+                   src="https://raw.githubusercontent.com/Fran15711/prueba1/refs/heads/main/VAL_logo.png">
+              <span class="hex__name">Vallua</span>
+            </div>
+          </div>
+          <div class="hex-wrap" data-index="20">
+            <div class="hex" role="listitem" data-sector="inmobiliario"
+                 tabindex="0" aria-label="Torre Neen — ver proyectos y evidencias">
+              <img class="hex__img" loading="lazy" alt=""
+                   src="https://raw.githubusercontent.com/Fran15711/prueba1/refs/heads/main/logo-neen.png">
+              <span class="hex__name">Torre Neen</span>
+            </div>
+          </div>
+          <div class="hex-wrap" data-index="21">
+            <div class="hex" role="listitem" data-sector="inmobiliario"
+                 tabindex="0" aria-label="Slider Desarrollos — ver proyectos y evidencias">
+              <img class="hex__img" loading="lazy" alt=""
+                   src="https://raw.githubusercontent.com/Fran15711/prueba1/refs/heads/main/Recurso-5.png">
+              <span class="hex__name">Slider Desarro.</span>
+            </div>
+          </div>
+          <div class="hex-wrap" data-index="22">
+            <div class="hex" role="listitem" data-sector="salud"
+                 tabindex="0" aria-label="Dra. Karen Kelly — ver proyectos y evidencias">
+              <img class="hex__img" loading="lazy" alt=""
+                   src="https://raw.githubusercontent.com/Fran15711/prueba1/refs/heads/main/media%20(5).png">
+              <span class="hex__name">Dra. K. Kelly</span>
+            </div>
+          </div>
+        </div><!-- /hex-row 5 -->
+
+      </div><!-- /hex-panal -->
+
+    </div><!-- /proyectos__inner -->
+  </section>
+
+  <!-- ==========================================
+       4 · GALGA — case study principal
+  ========================================== -->
+  <section id="galga" class="s-galga" data-track-section="galga"
+           aria-labelledby="galga-title">
+    <div class="galga__inner">
+
+      <!-- Header -->
+      <div class="galga__header">
+        <p class="section-eyebrow">Case Study · 2024–2025</p>
+        <h2 class="section-title" id="galga-title">Galga Maquinaria</h2>
+        <p class="section-sub">
+          Marketing de performance en sector industrial B2B.
+          SEO, Google Ads, contenido y analítica construidos desde cero.
+        </p>
+      </div>
+
+      <!-- KPIs animados -->
+      <div class="galga__kpis" role="list" aria-label="Métricas clave del caso Galga">
+        <div class="galga__kpi" role="listitem">
+          <span class="galga__kpi-value"
+                data-to="26136692"
+                data-format="currency"
+                data-compact="1"
+                aria-label="26 millones de pesos de revenue atribuido">$—</span>
+          <span class="galga__kpi-label">Revenue atribuido</span>
+        </div>
+        <div class="galga__kpi" role="listitem">
+          <span class="galga__kpi-value"
+                data-to="1226"
+                data-suffix="%"
+                aria-label="1226 por ciento de ROI general">—</span>
+          <span class="galga__kpi-label">ROI general</span>
+        </div>
+        <div class="galga__kpi galga__kpi--highlight" role="listitem">
+          <span class="galga__kpi-value"
+                data-to="64.7"
+                data-suffix="x"
+                aria-label="ROI de 64 punto 7 veces en Mimaki Impresión">—</span>
+          <span class="galga__kpi-label">ROI Mimaki Impresión</span>
+        </div>
+        <div class="galga__kpi" role="listitem">
+          <span class="galga__kpi-value"
+                data-to="1801203"
+                data-format="currency"
+                data-compact="1"
+                aria-label="1 punto 8 millones de pesos de inversión total">$—</span>
+          <span class="galga__kpi-label">Inversión total</span>
+        </div>
+      </div>
+
+      <!-- Cuerpo: descripción + model-viewer -->
+      <div class="galga__body">
+
+        <!-- Columna izquierda: texto + evidencias -->
+        <div class="galga__content">
+          <p class="galga__description">
+            Revenue de $26.1M MXN atribuido con una inversión de $1.8M.
+            Un ROI de 1,226% que incluye una categoría estrella
+            (Mimaki Impresión) con retorno de 64.7x.
+          </p>
+          <p class="galga__description">
+            El trabajo incluyó SEO técnico, campañas de búsqueda,
+            contenido B2B, dashboards en Looker Studio y reportes
+            ejecutivos mensuales para toma de decisiones.
+          </p>
+
+          <nav class="galga__evidence" aria-label="Evidencias del caso Galga">
+            <a href="[PLACEHOLDER — URL reporte anual 2025 fran15711.github.io]"
+               class="galga__evidence-link"
+               target="_blank" rel="noopener noreferrer"
+               data-track="external_link_clicked"
+               data-track-label="galga_reporte_anual">
+              Reporte anual 2025
+              <svg width="10" height="10" viewBox="0 0 10 10" fill="none" aria-hidden="true">
+                <path d="M1.5 8.5L8.5 1.5M8.5 1.5H3.5M8.5 1.5V6.5"
+                      stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
+              </svg>
+            </a>
+            <a href="https://es.semrush.com/analytics/overview/?q=galga.mx&protocol=https&searchType=domain"
+               class="galga__evidence-link"
+               target="_blank" rel="noopener noreferrer"
+               data-track="external_link_clicked"
+               data-track-label="galga_semrush">
+              Semrush galga.mx
+              <svg width="10" height="10" viewBox="0 0 10 10" fill="none" aria-hidden="true">
+                <path d="M1.5 8.5L8.5 1.5M8.5 1.5H3.5M8.5 1.5V6.5"
+                      stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
+              </svg>
+            </a>
+            <a href="[PLACEHOLDER — URL reporte mensual ejemplo fran15711.github.io]"
+               class="galga__evidence-link"
+               data-track="external_link_clicked"
+               data-track-label="galga_reporte_mensual">
+              Ejemplo reporte mensual
+              <svg width="10" height="10" viewBox="0 0 10 10" fill="none" aria-hidden="true">
+                <path d="M1.5 8.5L8.5 1.5M8.5 1.5H3.5M8.5 1.5V6.5"
+                      stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
+              </svg>
+            </a>
+          </nav>
+        </div>
+
+        <!-- Columna derecha: model-viewer Mimaki -->
+        <div class="galga__model-wrap">
+          <p class="galga__model-caption">
+            No solo en slides.<br>
+            El equipo que generó el ROI de 64.7x.
+          </p>
+
+          <model-viewer
+            id="mimaki-viewer"
+            class="galga__model-viewer"
+            src="https://cdn.shopify.com/3d/models/0aacfdb4c31734ca/mimaki_UJ330H.glb"
+            poster="https://galga.mx/cdn/shop/files/f90ba951d393bfac8ca118850d36fbd5187989f086a0f46718bca9af8cf6f53b.png?v=1775677837&width=1600"
+            alt="Impresora Mimaki UJ-330H — equipo de impresión UV de Galga Maquinaria"
+            auto-rotate
+            auto-rotate-delay="2000"
+            rotation-per-second="6deg"
+            camera-controls
+            shadow-intensity="0.25"
+            exposure="1.15"
+            environment-image="neutral"
+            loading="lazy"
+            reveal="auto"
+            ar
+            data-track="model_viewer_interaction"
+          >
+            <!-- Barra de progreso personalizada -->
+            <div slot="progress-bar" class="galga__model-progress-bar" id="mv-progress-bar">
+              <div class="galga__model-progress-fill" id="mv-progress-fill"></div>
+              <span class="galga__model-progress-label" id="mv-progress-label">Cargando modelo AR… 0%</span>
+            </div>
+
+            <!-- Fallback si el GLB no carga -->
+            <div slot="error" class="galga__model-error" role="alert">
+              <p>El modelo 3D no está disponible.</p>
+              <a href="https://cdn.shopify.com/3d/models/0aacfdb4c31734ca/mimaki_UJ330H.glb"
+                 target="_blank" rel="noopener noreferrer"
+                 data-track="external_link_clicked"
+                 data-track-label="galga_glb_fallback">
+                Ver archivo GLB →
+              </a>
+            </div>
+          </model-viewer>
+        </div>
+
+      </div><!-- /galga__body -->
+    </div><!-- /galga__inner -->
+  </section>
+
+  <!-- ==========================================
+       5 · EXPERIENCIA — timeline limpia
+  ========================================== -->
+  <!-- ==========================================
+       5 · EXPERIENCIA — cartas como protagonistas
+  ========================================== -->
+  <section id="experiencia" class="s-experiencia" data-track-section="experiencia"
+           aria-labelledby="experiencia-title">
+    <div class="experiencia__inner">
+
+      <div class="experiencia__header">
+        <p class="section-eyebrow">Trayectoria</p>
+        <h2 class="section-title" id="experiencia-title">
+          Cuatro etapas.<br>Tres cartas que lo verifican.
+        </h2>
+        <p class="section-sub">
+          Las empresas donde trabajé dejaron evidencia escrita.
+          Cada carta abre en pantalla y es verificable.
+        </p>
+      </div>
+
+      <!-- Las cartas SON el contenido, no el apéndice -->
+      <div class="exp-letters-grid">
+
+        <!-- Galga: link al case study en lugar de carta -->
+        <div class="exp-letter exp-letter--featured">
+          <div class="exp-letter__meta">
+            <span class="exp-letter__period">2024 — Actual</span>
+            <span class="exp-item__badge">Actual</span>
+          </div>
+          <h3 class="exp-letter__company">Galga Maquinaria</h3>
+          <p class="exp-letter__role">Marketing Performance / Growth</p>
+          <a href="#galga" class="exp-letter__cta"
+             data-track="nav_clicked" data-track-label="exp_to_galga">
+            Ver case study — $26.1M MXN en revenue atribuido →
+          </a>
+        </div>
+
+        <a href="https://fran15711.github.io/cartarecomendacionevacolors/"
+           class="exp-letter"
+           onclick="openPopup(event, this.href)"
+           data-track="external_link_clicked" data-track-label="carta_evacolors">
+          <div class="exp-letter__meta">
+            <span class="exp-letter__period">2023 — 2024</span>
+          </div>
+          <h3 class="exp-letter__company">Evacolors</h3>
+          <p class="exp-letter__role">Marketing y Contenidos · Manufactura B2B</p>
+          <span class="exp-letter__cta">Abrir carta de recomendación →</span>
+        </a>
+
+        <a href="https://fran15711.github.io/cartarecomendacionmdr/"
+           class="exp-letter"
+           onclick="openPopup(event, this.href)"
+           data-track="external_link_clicked" data-track-label="carta_mercadoctor">
+          <div class="exp-letter__meta">
+            <span class="exp-letter__period">2022 — 2023</span>
+          </div>
+          <h3 class="exp-letter__company">Mercadoctor</h3>
+          <p class="exp-letter__role">Marketing de Contenidos · Agencia</p>
+          <span class="exp-letter__cta">Abrir carta de recomendación →</span>
+        </a>
+
+        <a href="https://fran15711.github.io/cartasrecomendacion/"
+           class="exp-letter"
+           onclick="openPopup(event, this.href)"
+           data-track="external_link_clicked" data-track-label="carta_mex7">
+          <div class="exp-letter__meta">
+            <span class="exp-letter__period">2020 — 2022</span>
+          </div>
+          <h3 class="exp-letter__company">Mex7 Boots</h3>
+          <p class="exp-letter__role">Encargado de Marketing · Shopify + ferias</p>
+          <span class="exp-letter__cta">Abrir carta de recomendación →</span>
+        </a>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================
+       6 · CERTIFICACIONES — tiles premium
+       El efecto spotlight (luz que sigue al mouse) lo aplica script.js
+       actualizando --mouse-x / --mouse-y en cada cert-card.
+  ========================================== -->
+  <section id="certificaciones" class="s-certificaciones"
+           data-track-section="certificaciones"
+           aria-labelledby="certs-title">
+    <div class="certificaciones__inner">
+
+      <div class="certificaciones__header">
+        <p class="section-eyebrow">Certificaciones</p>
+        <h2 class="section-title" id="certs-title">Verificables. Todas.</h2>
+        <p class="section-sub">Cada botón lleva a la credencial original.</p>
+      </div>
+
+      <!-- Certificaciones: efecto "placa brillante" con canvas (igual que portafolio original) -->
+      <div class="certificaciones__grid" role="list">
+
+        <a href="https://skillshop.credential.net/3381bf8c-8686-472e-894a-986d860a1ff9#acc.9WPBvdFA"
+           class="cert-card" data-shiny-button
+           role="listitem" target="_blank" rel="noopener noreferrer"
+           data-track="certification_clicked" data-track-label="google_ads_search"
+           aria-label="Google Ads Search Professional — Google Skillshop">
+          <canvas></canvas>
+          <div class="cert-card__glow" aria-hidden="true"></div>
+          <div class="cert-card__body">
+            <div class="cert-card__info">
+              <p class="cert-card__name">Google Ads Search Professional</p>
+              <p class="cert-card__issuer">Google Skillshop</p>
+            </div>
+          </div>
+          <img class="cert-card__badge"
+               src="https://raw.githubusercontent.com/Fran15711/prueba1/refs/heads/main/search%2Bprofessionals%2Bbadge-640w.png"
+               alt="Google Ads badge" aria-hidden="true">
+        </a>
+
+        <a href="https://app.hubspot.com/academy/achievements/fr1gc72w/es/1/juan-francisco-noriega-retana/certificado-en-optimizacion-del-inbound-marketing"
+           class="cert-card" data-shiny-button
+           role="listitem" target="_blank" rel="noopener noreferrer"
+           data-track="certification_clicked" data-track-label="hubspot_inbound"
+           aria-label="Inbound Marketing — HubSpot Academy">
+          <canvas></canvas>
+          <div class="cert-card__glow" aria-hidden="true"></div>
+          <div class="cert-card__body">
+            <div class="cert-card__info">
+              <p class="cert-card__name">Inbound Marketing</p>
+              <p class="cert-card__issuer">HubSpot Academy</p>
+            </div>
+          </div>
+          <img class="cert-card__badge"
+               src="https://raw.githubusercontent.com/Fran15711/prueba1/refs/heads/main/HubSpot-Logo.png"
+               alt="HubSpot logo" aria-hidden="true">
+        </a>
+
+        <a href="https://app.hubspot.com/academy/achievements/3x5cw81x/es/1/juan-francisco-noriega-retana/certificado-en-el-software-de-marketing-de-hubspot"
+           class="cert-card" data-shiny-button
+           role="listitem" target="_blank" rel="noopener noreferrer"
+           data-track="certification_clicked" data-track-label="hubspot_software"
+           aria-label="Software de Marketing HubSpot — HubSpot Academy">
+          <canvas></canvas>
+          <div class="cert-card__glow" aria-hidden="true"></div>
+          <div class="cert-card__body">
+            <div class="cert-card__info">
+              <p class="cert-card__name">Software de Marketing HubSpot</p>
+              <p class="cert-card__issuer">HubSpot Academy</p>
+            </div>
+          </div>
+          <img class="cert-card__badge"
+               src="https://raw.githubusercontent.com/Fran15711/prueba1/refs/heads/main/HubSpot-Logo.png"
+               alt="HubSpot logo" aria-hidden="true">
+        </a>
+
+        <a href="https://app.smalltalk2.me/cert/7ba3ea7f"
+           class="cert-card" data-shiny-button
+           role="listitem" target="_blank" rel="noopener noreferrer"
+           data-track="certification_clicked" data-track-label="english_c1"
+           aria-label="Inglés C1 — SmallTalk2Me">
+          <canvas></canvas>
+          <div class="cert-card__glow" aria-hidden="true"></div>
+          <div class="cert-card__body">
+            <div class="cert-card__info">
+              <p class="cert-card__name">Inglés: evaluación C1 · B2 de trabajo</p>
+              <p class="cert-card__issuer">SmallTalk2Me</p>
+            </div>
+          </div>
+          <img class="cert-card__badge"
+               src="https://raw.githubusercontent.com/Fran15711/prueba1/refs/heads/main/samlltalk2me.png"
+               alt="SmallTalk2Me logo" aria-hidden="true">
+        </a>
+
+      </div><!-- /certificaciones__grid -->
+    </div>
+  </section>
+
+  <!-- ==========================================
+       7 · SOBRE MÍ — forma de trabajar
+  ========================================== -->
+  <section id="sobre-mi" class="s-sobre-mi" data-track-section="sobre_mi"
+           aria-labelledby="sobre-mi-title">
+    <div class="sobre-mi__inner">
+
+      <div class="sobre-mi__header">
+        <p class="section-eyebrow">Sobre mí</p>
+        <h2 class="section-title" id="sobre-mi-title">Cómo trabajo</h2>
+        <button class="sobre-mi__theme-btn" id="sobre-mi-theme-btn"
+                aria-label="Cambiar tema de la sección">
+          <span class="sobre-mi__theme-icon">◐</span> Vista clara
+        </button>
+      </div>
+
+      <div class="sobre-mi__body">
+
+        <div class="sobre-mi__text-col">
+          <p class="sobre-mi__lead">
+            No te voy a decir que soy apasionado del marketing.
+            Hay evidencia para eso.
+          </p>
+          <p class="sobre-mi__para">
+            Trabajo conectando estrategia, ejecución y datos.
+            Sin ego de canales: uso el que funciona.
+          </p>
+        </div>
+
+        <div class="sobre-mi__pillars" role="list" aria-label="Principios de trabajo">
+          <div class="pillar" role="listitem">
+            <span class="pillar__n" aria-hidden="true">01</span>
+            <p class="pillar__text">Trabajo con evidencia. Si no hay datos, digo que no hay datos.</p>
+          </div>
+          <div class="pillar" role="listitem">
+            <span class="pillar__n" aria-hidden="true">02</span>
+            <p class="pillar__text">No tengo ego con los canales. Uso el que tiene sentido para el objetivo.</p>
+          </div>
+          <div class="pillar" role="listitem">
+            <span class="pillar__n" aria-hidden="true">03</span>
+            <p class="pillar__text">Reporto con claridad. Los datos sirven cuando alguien puede entenderlos.</p>
+          </div>
+          <div class="pillar" role="listitem">
+            <span class="pillar__n" aria-hidden="true">04</span>
+            <p class="pillar__text">Prefiero hacer con criterio que seguir listas sin entender el porqué.</p>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Contadores de vida laboral -->
+      <div class="sobre-mi__counters" role="list" aria-label="Métricas personales aproximadas">
+        <div class="life-stat" role="listitem">
+          <span class="life-stat__value"
+                data-to="300" data-speed="1200"
+                aria-label="Aproximadamente 300 blogs escritos">0</span>
+          <span class="life-stat__label">blogs escritos</span>
+        </div>
+        <div class="life-stat" role="listitem">
+          <span class="life-stat__value"
+                data-to="157" data-speed="900"
+                aria-label="Aproximadamente 157 proyectos terminados">0</span>
+          <span class="life-stat__label">proyectos terminados</span>
+        </div>
+        <div class="life-stat" role="listitem">
+          <span class="life-stat__value"
+                data-to="23" data-speed="600"
+                aria-label="23 marcas con evidencias">0</span>
+          <span class="life-stat__label">marcas con evidencias</span>
+        </div>
+        <div class="life-stat" role="listitem">
+          <span class="life-stat__value"
+                data-to="1700" data-speed="1500"
+                aria-label="Aproximadamente 1700 cafés">0</span>
+          <span class="life-stat__label">cafés (aprox.)</span>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ==========================================
+       8 · CONTACTO — mínimo y directo
+  ========================================== -->
+  <section id="contacto" class="s-contacto" data-track-section="contacto"
+           aria-labelledby="contacto-title">
+    <div class="contacto__inner">
+
+      <h2 class="contacto__title" id="contacto-title">
+        Si llegaste hasta aquí,<br>
+        probablemente ya tenemos algo que hablar.
+      </h2>
+
+      <nav class="contacto__links" aria-label="Canales de contacto">
+
+        <a href="mailto:francisconoriegaret15@gmail.com"
+           class="contacto__item contacto__item--primary"
+           data-track="contact_clicked"
+           data-track-label="email_direct">
+          <div class="contacto__item-content">
+            <span class="contacto__item-label">Email</span>
+            <span class="contacto__item-value">francisconoriegaret15@gmail.com</span>
+          </div>
+          <span class="contacto__item-arrow" aria-hidden="true">→</span>
+        </a>
+
+        <a href="[PLACEHOLDER — URL de LinkedIn de Francisco]"
+           class="contacto__item"
+           target="_blank" rel="noopener noreferrer"
+           data-track="contact_clicked"
+           data-track-label="linkedin">
+          <div class="contacto__item-content">
+            <span class="contacto__item-label">LinkedIn</span>
+            <span class="contacto__item-value">[PLACEHOLDER — nombre en LinkedIn]</span>
+          </div>
+          <span class="contacto__item-arrow" aria-hidden="true">↗</span>
+        </a>
+
+        <a href="[PLACEHOLDER — URL del CV en PDF]"
+           class="contacto__item"
+           download="CV_Francisco_Noriega.pdf"
+           data-track="cv_downloaded"
+           data-track-label="cv_pdf">
+          <div class="contacto__item-content">
+            <span class="contacto__item-label">CV</span>
+            <span class="contacto__item-value">Descargar PDF</span>
+          </div>
+          <span class="contacto__item-arrow" aria-hidden="true">↓</span>
+        </a>
+
+      </nav>
+
+      <p class="contacto__footer">
+        Francisco Noriega · Marketing · <span id="current-year"></span>
+      </p>
+
+    </div>
+  </section>
+
+</main><!-- /site -->
+
+<!-- ============================================================
+     EVIDENCE DRAWER — panel de evidencias por marca
+     Se muestra cuando se hace click en un hexágono.
+     script.js inyecta el contenido y controla aria-hidden.
+============================================================ -->
+<div id="evidence-drawer" class="evidence-drawer" aria-hidden="true">
+  <div class="evidence-drawer__backdrop" id="evidence-backdrop"></div>
+  <div class="evidence-drawer__panel"
+       role="dialog"
+       aria-modal="true"
+       aria-labelledby="evidence-brand-name"
+       tabindex="-1">
+    <div class="evidence-drawer__handle" aria-hidden="true"></div>
+    <div class="evidence-drawer__header">
+      <div class="evidence-drawer__info">
+        <h3 class="evidence-drawer__name" id="evidence-brand-name">—</h3>
+        <p class="evidence-drawer__sector" id="evidence-brand-sector">—</p>
+        <p class="evidence-drawer__desc" id="evidence-brand-desc">—</p>
+      </div>
+      <button class="evidence-drawer__close" id="evidence-close"
+              aria-label="Cerrar panel de evidencias">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+          <path d="M1 1L13 13M13 1L1 13"
+                stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+        </svg>
+      </button>
+    </div>
+    <div class="evidence-drawer__items" id="evidence-items" role="list">
+      <!-- script.js inyecta los botones de evidencia aquí -->
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
+     POPUP OVERLAY — para abrir evidencias de github.io en iframe
+     Para YouTube y externos: script.js abre en nueva pestaña.
+============================================================ -->
+<div id="popup-overlay" class="popup-overlay" hidden aria-hidden="true">
+  <div class="popup-overlay__backdrop" id="popup-backdrop"></div>
+  <div class="popup-overlay__frame" role="dialog" aria-modal="true"
+       aria-label="Evidencia del proyecto" tabindex="-1">
+    <div class="popup-overlay__toolbar">
+      <button class="popup-overlay__close" id="popup-close"
+              aria-label="Cerrar evidencia">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+          <path d="M1 1L13 13M13 1L1 13"
+                stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+        </svg>
+      </button>
+    </div>
+    <iframe id="popup-iframe"
+            class="popup-overlay__iframe"
+            src="about:blank"
+            title="Evidencia del proyecto"
+            loading="lazy"
+            sandbox="allow-scripts allow-same-origin allow-forms allow-popups">
+    </iframe>
+  </div>
+</div>
+
+<script src="script.js" defer></script>
+</body>
+</html>
