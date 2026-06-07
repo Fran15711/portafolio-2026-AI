@@ -648,7 +648,7 @@
           <nav class="galga__evidence" aria-label="Evidencias del caso Galga">
             <a href="https://fran15711.github.io/reporteanualgalga2025/"
                class="galga__evidence-link"
-               target="_blank" rel="noopener noreferrer"
+               onclick="event.preventDefault(); openPopup(this.href)"
                data-track="external_link_clicked"
                data-track-label="galga_reporte_anual">
               Reporte anual 2025
@@ -670,6 +670,7 @@
             </a>
             <a href="https://fran15711.github.io/reportemensualetmcolombia/"
                class="galga__evidence-link"
+               onclick="event.preventDefault(); openPopup(this.href)"
                data-track="external_link_clicked"
                data-track-label="galga_reporte_mensual">
               Ejemplo reporte mensual
