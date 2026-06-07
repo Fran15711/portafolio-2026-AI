@@ -357,11 +357,14 @@
   const CHAT_HISTORY_LIMIT = 6; /* pares usuario/asistente */
 
   const TYPEWRITER_PHRASES = [
-    'Pregúntame qué proyectos puede comprobar Francisco\u2026',
-    'Pregúntame cómo aplica IA en marketing real\u2026',
-    'Pregúntame qué haría por tu equipo de growth\u2026',
-    'Pregúntame por los números de GalgaX\u2026',
-    'Pregúntame por sus certificaciones\u2026',
+    'Pregúntame qué hay detrás del CV\u2026',
+    'Pregúntame cómo piensa Francisco cuando entra a un problema\u2026',
+    'Pregúntame qué resultados puede comprobar sin adornos\u2026',
+    'Pregúntame cómo convirtió Galga en un sistema medible\u2026',
+    'Pregúntame por qué su perfil mezcla creatividad, datos y ventas\u2026',
+    'Pregúntame cómo usa IA sin vender humo\u2026',
+    'Pregúntame qué aprendió empezando desde cero\u2026',
+    'Pregúntame cómo trabaja con ventas cuando los leads no sirven\u2026',
   ];
 
   const FALLBACK_RESPONSES = [
