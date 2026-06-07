@@ -531,6 +531,23 @@ button {
 }
 
 
+
+/* Burbuja del bot durante streaming */
+.chat__message--streaming {
+  min-height: 24px;
+}
+.chat__message--streaming > p::after {
+  content: '▋';
+  display: inline-block;
+  animation: chat-cursor 0.55s step-end infinite;
+  color: var(--text-muted);
+  margin-left: 1px;
+}
+@keyframes chat-cursor {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0; }
+}
+
 /* 8b — Centro: headline + typewriter */
 /* Position absolute para no interferir con el layout flex */
 .chat__center {
