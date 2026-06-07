@@ -506,14 +506,28 @@ button {
 /* Mensaje del bot */
 .chat__message--bot {
   display: flex;
-  justify-content: flex-start;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+  max-width: 720px;
 }
 .chat__message--bot p {
   font-size: 14px;
   line-height: 1.80;
   color: var(--text-secondary);
-  max-width: 92%;
+  max-width: 100%;
   margin: 0;
+}
+.chat__message--bot .chat__line--bullet {
+  padding-left: 14px;
+  border-left: 2px solid var(--border-medium);
+}
+.chat__message--bot .chat__continuation {
+  font-size: 13px;
+  color: var(--text-muted);
+  font-style: italic;
+  margin-top: 4px;
+  line-height: 1.6;
 }
 
 
