@@ -1,0 +1,10 @@
+{
+  "name": "portafolio-francisco-noriega",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Portafolio interactivo de Francisco Noriega con asistente IA.",
+  "engines": {
+    "node": ">=18.x"
+  }
+}
