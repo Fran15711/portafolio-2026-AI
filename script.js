@@ -14,8 +14,8 @@
    * 0. CONFIGURACIÓN
    * ============================================================ */
   const CFG = {
-    splashDuration:     3200,   // ms — duración normal del splash
-    splashReducedMotion: 400,   // ms — con prefers-reduced-motion
+    splashDuration:     5300,   // ms — duración normal del splash
+    splashReducedMotion: 600,   // ms — con prefers-reduced-motion
     typingSpeed:          42,   // ms / caracter al escribir
     deletingSpeed:        26,   // ms / caracter al borrar
     pauseAfterType:     1900,   // ms — pausa tras completar frase
@@ -386,14 +386,15 @@
   const CHAT_HISTORY_LIMIT = 6; /* pares usuario/asistente */
 
   const TYPEWRITER_PHRASES = [
+    'Pregúntame cómo mis pasatiempos explican por qué elegí esta carrera\u2026',
     'Pregúntame qué hay detrás del CV\u2026',
-    'Pregúntame cómo piensa Francisco cuando entra a un problema\u2026',
-    'Pregúntame qué resultados puede comprobar sin adornos\u2026',
-    'Pregúntame cómo convirtió Galga en un sistema medible\u2026',
-    'Pregúntame por qué su perfil mezcla creatividad, datos y ventas\u2026',
-    'Pregúntame cómo usa IA sin vender humo\u2026',
-    'Pregúntame qué aprendió empezando desde cero\u2026',
-    'Pregúntame cómo trabaja con ventas cuando los leads no sirven\u2026',
+    'Pregúntame cómo pienso cuando entro a un problema\u2026',
+    'Pregúntame qué resultados puedo comprobar sin adornos\u2026',
+    'Pregúntame cómo convertí Galga en un sistema medible\u2026',
+    'Pregúntame por qué mezclo creatividad, datos y ventas\u2026',
+    'Pregúntame cómo uso IA sin vender humo\u2026',
+    'Pregúntame qué aprendí empezando desde cero\u2026',
+    'Pregúntame cómo trabajo con ventas cuando los leads no sirven\u2026',
   ];
 
   const FALLBACK_RESPONSES = [
@@ -413,6 +414,19 @@
     trackEvent('welcome_seen');
 
     const duration = reducedMotion ? CFG.splashReducedMotion : CFG.splashDuration;
+
+    /* Contador de carga 0 → 100% sincronizado con la duración */
+    const counterEl = qs('#splash-counter');
+    if (counterEl) {
+      const counterStart = performance.now();
+      const counterDur   = Math.max(duration - 300, 400);
+      function tickCounter(now) {
+        const pct = Math.min(100, Math.round(((now - counterStart) / counterDur) * 100));
+        counterEl.textContent = pct + '%';
+        if (pct < 100 && !exited) requestAnimationFrame(tickCounter);
+      }
+      requestAnimationFrame(tickCounter);
+    }
 
     let exited = false;
     function exitSplash(skipped) {
@@ -645,7 +659,7 @@
       const streamP = document.createElement('p');
       streamWrapper.appendChild(streamP);
       conv.appendChild(streamWrapper);
-      scrollConvToBottom();
+      scrollConvToBottom(true);
 
       let accumulated = '';
       let streamStarted = false;
@@ -775,16 +789,25 @@
     }
 
     conv.appendChild(wrapper);
-    scrollConvToBottom();
+    scrollConvToBottom(true);
   }
 
-  function scrollConvToBottom() {
+  function scrollConvToBottom(force) {
     const conv = qs('#chat-conversation');
     if (!conv) return;
     const last = conv.lastElementChild;
     if (!last) return;
-    last.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-    requestAnimationFrame(() => window.scrollBy({ top: 80, behavior: 'smooth' }));
+
+    /* Solo auto-desplazar si el usuario ya está cerca del fondo,
+       salvo que se fuerce (al enviar pregunta o crear la burbuja).
+       Si el usuario subió a leer algo, NO lo arrastramos. */
+    const scrollPos  = window.scrollY + window.innerHeight;
+    const docHeight  = document.documentElement.scrollHeight;
+    const nearBottom = (docHeight - scrollPos) < 220;
+
+    if (force || nearBottom) {
+      last.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
   }
 
   function hideChatCenter() {
@@ -1618,18 +1641,18 @@
 
     const translations = {
       es: {
-        'chat__title':    'Hola, soy el asistente de Francisco.',
-        'chat__sub':      'Simplifica el portafolio con IA. No soy Francisco,<br>pero sé todo sobre sus proyectos y resultados.',
-        '#chat-chips .chat__chip:nth-child(1)': '¿Qué puede comprobar?',
-        '#chat-chips .chat__chip:nth-child(2)': '¿Cómo usa IA?',
-        '#chat-chips .chat__chip:nth-child(3)': 'ROI en Galga →',
+        'chat__title':    'Pregúntame antes de la entrevista.',
+        'chat__sub':      'Es una pre-entrevista: pregúntame por mi experiencia, mis proyectos o qué hago fuera del trabajo.<br>Te responde una versión mía entrenada con todo lo que he hecho.',
+        '#chat-chips .chat__chip:nth-child(1)': '¿Cómo piensa Francisco?',
+        '#chat-chips .chat__chip:nth-child(2)': '¿Qué tan medible es su trabajo?',
+        '#chat-chips .chat__chip:nth-child(3)': '¿Qué haría en mi equipo?',
       },
       en: {
-        'chat__title':    "Hi, I'm Francisco's portfolio assistant.",
-        'chat__sub':      "Ask me anything about his projects and results.<br>I'm not Francisco, but I know his work.",
-        '#chat-chips .chat__chip:nth-child(1)': 'What can he prove?',
-        '#chat-chips .chat__chip:nth-child(2)': 'How does he use AI?',
-        '#chat-chips .chat__chip:nth-child(3)': 'Galga ROI →',
+        'chat__title':    'Interview me before the interview.',
+        'chat__sub':      "It's a pre-interview: ask me about my experience, my projects, or what I do outside of work.<br>You're talking to a version of me trained on everything I've done.",
+        '#chat-chips .chat__chip:nth-child(1)': 'How does Francisco think?',
+        '#chat-chips .chat__chip:nth-child(2)': 'How measurable is his work?',
+        '#chat-chips .chat__chip:nth-child(3)': 'What would he do on my team?',
       }
     };
 
