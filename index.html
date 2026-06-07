@@ -93,15 +93,27 @@
              data-track="contact_clicked" data-track-label="nav_contacto">Contacto</a></li>
     </ul>
 
+    <!-- Toggle tema global: sol/luna -->
+    <button class="navbar__theme-btn" id="theme-toggle"
+            aria-label="Cambiar a modo oscuro" title="Cambiar tema">
+      <span id="theme-icon" aria-hidden="true">🌙</span>
+    </button>
+
     <!-- Selector de idioma con banderas -->
     <div class="navbar__lang" role="group" aria-label="Idioma">
       <button class="navbar__lang-btn is-active" id="lang-btn-es"
               aria-label="Ver en español" aria-pressed="true">
-        🇲🇽 ES
+        <img class="navbar__flag" src="https://flagcdn.com/24x18/mx.png"
+             srcset="https://flagcdn.com/48x36/mx.png 2x"
+             width="24" height="18" alt="Español">
+        <span>ES</span>
       </button>
       <button class="navbar__lang-btn" id="lang-btn-en"
               aria-label="View in English" aria-pressed="false">
-        🇺🇸 EN
+        <img class="navbar__flag" src="https://flagcdn.com/24x18/us.png"
+             srcset="https://flagcdn.com/48x36/us.png 2x"
+             width="24" height="18" alt="English">
+        <span>EN</span>
       </button>
     </div>
 
@@ -691,8 +703,10 @@
           >
             <!-- Barra de progreso personalizada -->
             <div slot="progress-bar" class="galga__model-progress-bar" id="mv-progress-bar">
-              <div class="galga__model-progress-fill" id="mv-progress-fill"></div>
-              <span class="galga__model-progress-label" id="mv-progress-label">Cargando modelo AR… 0%</span>
+              <span class="galga__model-progress-label" id="mv-progress-label">Cargando modelo AR…</span>
+              <div class="galga__model-progress-fill-track">
+                <div class="galga__model-progress-fill" id="mv-progress-fill"></div>
+              </div>
             </div>
 
             <!-- Fallback si el GLB no carga -->
@@ -752,7 +766,7 @@
 
         <a href="https://fran15711.github.io/cartarecomendacionevacolors/"
            class="exp-letter"
-           onclick="openPopup(event, this.href)"
+           onclick="event.preventDefault(); openPopup(this.href)"
            data-track="external_link_clicked" data-track-label="carta_evacolors">
           <div class="exp-letter__meta">
             <span class="exp-letter__period">2023 — 2024</span>
@@ -764,7 +778,7 @@
 
         <a href="https://fran15711.github.io/cartarecomendacionmdr/"
            class="exp-letter"
-           onclick="openPopup(event, this.href)"
+           onclick="event.preventDefault(); openPopup(this.href)"
            data-track="external_link_clicked" data-track-label="carta_mercadoctor">
           <div class="exp-letter__meta">
             <span class="exp-letter__period">2022 — 2023</span>
@@ -776,7 +790,7 @@
 
         <a href="https://fran15711.github.io/cartasrecomendacion/"
            class="exp-letter"
-           onclick="openPopup(event, this.href)"
+           onclick="event.preventDefault(); openPopup(this.href)"
            data-track="external_link_clicked" data-track-label="carta_mex7">
           <div class="exp-letter__meta">
             <span class="exp-letter__period">2020 — 2022</span>
@@ -895,10 +909,7 @@
       <div class="sobre-mi__header">
         <p class="section-eyebrow">Sobre mí</p>
         <h2 class="section-title" id="sobre-mi-title">Cómo trabajo</h2>
-        <button class="sobre-mi__theme-btn" id="sobre-mi-theme-btn"
-                aria-label="Cambiar tema de la sección">
-          <span class="sobre-mi__theme-icon">◐</span> Vista clara
-        </button>
+
       </div>
 
       <div class="sobre-mi__body">
@@ -991,14 +1002,14 @@
           <span class="contacto__item-arrow" aria-hidden="true">→</span>
         </a>
 
-        <a href="[PLACEHOLDER — URL de LinkedIn de Francisco]"
+        <a href="https://www.linkedin.com/in/francisco-noriega-retana/"
            class="contacto__item"
            target="_blank" rel="noopener noreferrer"
            data-track="contact_clicked"
            data-track-label="linkedin">
           <div class="contacto__item-content">
             <span class="contacto__item-label">LinkedIn</span>
-            <span class="contacto__item-value">[PLACEHOLDER — nombre en LinkedIn]</span>
+            <span class="contacto__item-value">francisco-noriega-retana</span>
           </div>
           <span class="contacto__item-arrow" aria-hidden="true">↗</span>
         </a>
