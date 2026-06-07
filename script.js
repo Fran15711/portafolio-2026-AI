@@ -352,6 +352,10 @@
   let currentFilters  = { sector: '', type: '' };
   const viewedSections = new Set();
 
+  /* Historial de conversación para la API (máx. 6 turnos = 12 mensajes) */
+  const chatHistory = [];
+  const CHAT_HISTORY_LIMIT = 6; /* pares usuario/asistente */
+
   const TYPEWRITER_PHRASES = [
     'Pregúntame qué proyectos puede comprobar Francisco\u2026',
     'Pregúntame cómo aplica IA en marketing real\u2026',
@@ -595,15 +599,23 @@
 
       trackEvent('chat_question_submitted', { question_length: text.length });
 
-      /* Llamada a la API */
-      fetchReply(text)
+      /* Guardar mensaje del usuario en historial */
+      chatHistory.push({ role: 'user', content: text });
+      if (chatHistory.length > CHAT_HISTORY_LIMIT * 2) chatHistory.splice(0, 2);
+
+      /* Llamada a la API con historial */
+      fetchReply(text, [...chatHistory])
         .then(reply => {
           appendMessage(reply, 'bot');
+          /* Guardar respuesta en historial */
+          chatHistory.push({ role: 'assistant', content: reply });
+          if (chatHistory.length > CHAT_HISTORY_LIMIT * 2) chatHistory.splice(0, 2);
           trackEvent('chat_response_rendered', { source: 'api' });
         })
         .catch(err => {
           const fallback = FALLBACK_RESPONSES[Math.floor(Math.random() * FALLBACK_RESPONSES.length)];
           appendMessage(fallback, 'bot');
+          /* El fallback no entra en el historial para no contaminar el contexto */
           trackEvent('chat_error', { error: err.message || 'unknown' });
         })
         .finally(() => {
@@ -615,27 +627,88 @@
     }
   }
 
+  /* ──────────────────────────────────────────────────────────────
+   * renderBotMessage — convierte texto plano en párrafos DOM
+   * ──────────────────────────────────────────────────────────────
+   * 1. Partir en bloques por doble salto de línea.
+   * 2. Si un bloque tiene líneas bullet, crear <p class="chat__line--bullet">
+   *    por cada ítem limpio.
+   * 3. Si no, crear un <p> normal.
+   * 4. Nunca usar innerHTML con texto externo — solo textContent.
+   * ────────────────────────────────────────────────────────────── */
+  function renderBotMessage(text, container) {
+    const BULLET_RE = /^[\s]*[-*•·]\s+/;
+
+    const blocks = text
+      .replace(/\r\n/g, '\n')
+      .replace(/\r/g,   '\n')
+      .trim()
+      .split(/\n{2,}/);
+
+    blocks.forEach(block => {
+      const trimmed = block.trim();
+      if (!trimmed) return;
+
+      const lines = trimmed.split('\n');
+
+      /* Bloque de bullets puros */
+      if (lines.length > 1 && lines.every(l => BULLET_RE.test(l.trim()))) {
+        lines.forEach(line => {
+          const clean = line.trim().replace(BULLET_RE, '').trim();
+          if (!clean) return;
+          const p = document.createElement('p');
+          p.className = 'chat__line chat__line--bullet';
+          p.textContent = clean;
+          container.appendChild(p);
+        });
+        return;
+      }
+
+      /* Párrafo normal: juntar líneas del mismo bloque en una sola */
+      const singleLine = lines
+        .map(l => l.trim().replace(BULLET_RE, '').trim())
+        .filter(Boolean)
+        .join(' ');
+
+      const p = document.createElement('p');
+      p.textContent = singleLine;
+      container.appendChild(p);
+    });
+  }
+
   /* Añadir mensaje a la conversación */
   function appendMessage(text, role) {
     const conv = qs('#chat-conversation');
     if (!conv) return;
 
-    const div = document.createElement('div');
-    div.className = `chat__message chat__message--${role}`;
-    const p = document.createElement('p');
-    p.textContent = text;  /* textContent: seguro, sin XSS */
-    div.appendChild(p);
-    conv.appendChild(div);
+    const wrapper = document.createElement('div');
+    wrapper.className = `chat__message chat__message--${role}`;
+
+    if (role === 'user') {
+      const p = document.createElement('p');
+      p.textContent = text;
+      wrapper.appendChild(p);
+    } else {
+      renderBotMessage(text, wrapper);
+      /* Fallback si renderBotMessage no produjo nada */
+      if (!wrapper.hasChildNodes()) {
+        const p = document.createElement('p');
+        p.textContent = text;
+        wrapper.appendChild(p);
+      }
+    }
+
+    conv.appendChild(wrapper);
     scrollConvToBottom();
   }
 
   function scrollConvToBottom() {
-    /* Con chat de scroll natural (min-height, sin overflow interno),
-       usamos scrollIntoView en el último mensaje */
     const conv = qs('#chat-conversation');
     if (!conv) return;
     const last = conv.lastElementChild;
-    if (last) last.scrollIntoView({ behavior: 'smooth', block: 'end' });
+    if (!last) return;
+    last.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    requestAnimationFrame(() => window.scrollBy({ top: 80, behavior: 'smooth' }));
   }
 
   function hideChatCenter() {
@@ -646,15 +719,23 @@
     }
   }
 
-  /* Fetch a /api/chat con timeout de 12s */
-  async function fetchReply(question) {
+  /* Fetch a /api/chat con timeout de 12s
+     history: array [{role, content}] — últimos turnos del chat */
+  async function fetchReply(question, history = []) {
     const ctrl = new AbortController();
     const tid  = setTimeout(() => ctrl.abort(), 12000);
     try {
+      /* Enviar historial SIN el último mensaje del usuario (ya va en "message") */
+      const historyWithoutLast = history.length > 0
+        ? history.slice(0, -1)
+        : [];
       const res = await fetch(CFG.api, {
         method:  'POST',
         headers: { 'Content-Type': 'application/json' },
-        body:    JSON.stringify({ message: question }),
+        body:    JSON.stringify({
+          message: question,
+          history: historyWithoutLast,
+        }),
         signal:  ctrl.signal,
       });
       clearTimeout(tid);
