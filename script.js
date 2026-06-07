@@ -96,6 +96,35 @@
     return d.innerHTML;
   }
 
+  /* Limpieza básica de Markdown durante streaming (sin regex pesadas) */
+  function stripMarkdownBasic(text) {
+    return text
+      .replace(/^#{1,6}\s+/gm, '')
+      .replace(/\*\*(.+?)\*\*/g, '$1')
+      .replace(/__(.+?)__/g,     '$1')
+      .replace(/\*(.+?)\*/g,     '$1')
+      .replace(/`(.+?)`/g,       '$1')
+      .replace(/\[(.+?)\]\(.+?\)/g, '$1');
+  }
+
+  /* Limpieza completa de Markdown para post-procesado final */
+  function stripMarkdown(text) {
+    return text
+      .replace(/^#{1,6}\s+/gm, '')
+      .replace(/\*\*(.+?)\*\*/g, '$1')
+      .replace(/__(.+?)__/g,     '$1')
+      .replace(/\*(.+?)\*/g,     '$1')
+      .replace(/_(.+?)_/g,       '$1')
+      .replace(/`(.+?)`/g,       '$1')
+      .replace(/```[\s\S]*?```/g, m => m.replace(/```\w*\n?/g, '').trim())
+      .replace(/^[-=*]{3,}\s*$/gm, '')
+      .replace(/^[\s]*[-*•·]\s+/gm, '')
+      .replace(/^\d+\.\s+/gm, '')
+      .replace(/\[(.+?)\]\(.+?\)/g, '$1')
+      .replace(/\n{3,}/g, '\n\n')
+      .trim();
+  }
+
   function throttle(fn, ms) {
     let last = 0;
     return function (...args) {
@@ -606,27 +635,71 @@
       chatHistory.push({ role: 'user', content: text });
       if (chatHistory.length > CHAT_HISTORY_LIMIT * 2) chatHistory.splice(0, 2);
 
-      /* Llamada a la API con historial */
-      fetchReply(text, [...chatHistory])
-        .then(reply => {
-          appendMessage(reply, 'bot');
-          /* Guardar respuesta en historial */
-          chatHistory.push({ role: 'assistant', content: reply });
-          if (chatHistory.length > CHAT_HISTORY_LIMIT * 2) chatHistory.splice(0, 2);
-          trackEvent('chat_response_rendered', { source: 'api' });
-        })
-        .catch(err => {
-          const fallback = FALLBACK_RESPONSES[Math.floor(Math.random() * FALLBACK_RESPONSES.length)];
-          appendMessage(fallback, 'bot');
-          /* El fallback no entra en el historial para no contaminar el contexto */
-          trackEvent('chat_error', { error: err.message || 'unknown' });
-        })
-        .finally(() => {
+      /* Historial sin el último mensaje (va en "message") */
+      const histForApi = chatHistory.length > 1 ? chatHistory.slice(0, -1) : [];
+
+      /* ── Crear burbuja de respuesta vacía para streaming ── */
+      const conv = qs('#chat-conversation');
+      const streamWrapper = document.createElement('div');
+      streamWrapper.className = 'chat__message chat__message--bot chat__message--streaming';
+      const streamP = document.createElement('p');
+      streamWrapper.appendChild(streamP);
+      conv.appendChild(streamWrapper);
+      scrollConvToBottom();
+
+      let accumulated = '';
+      let streamStarted = false;
+
+      fetchReplyStream(
+        text,
+        histForApi,
+
+        /* onChunk — token por token */
+        (chunk) => {
+          if (!streamStarted) {
+            streamStarted = true;
+            if (loading) { loading.setAttribute('hidden', ''); loading.setAttribute('aria-hidden', 'true'); }
+          }
+          accumulated += chunk;
+          streamP.textContent = stripMarkdownBasic(accumulated);
+          scrollConvToBottom();
+        },
+
+        /* onDone — reemplazar con párrafos correctos */
+        () => {
+          streamWrapper.classList.remove('chat__message--streaming');
+          while (streamWrapper.firstChild) streamWrapper.removeChild(streamWrapper.firstChild);
+
+          const finalText = stripMarkdown(accumulated);
+          if (finalText) {
+            renderBotMessage(finalText, streamWrapper);
+            chatHistory.push({ role: 'assistant', content: finalText });
+            if (chatHistory.length > CHAT_HISTORY_LIMIT * 2) chatHistory.splice(0, 2);
+          } else {
+            /* Sin texto: mostrar fallback */
+            const fb = FALLBACK_RESPONSES[Math.floor(Math.random() * FALLBACK_RESPONSES.length)];
+            renderBotMessage(fb, streamWrapper);
+          }
+
           if (loading) { loading.setAttribute('hidden', ''); loading.setAttribute('aria-hidden', 'true'); }
           isSending = false;
           updateSendBtn();
           scrollConvToBottom();
-        });
+          trackEvent('chat_response_rendered', { source: 'api_stream' });
+        },
+
+        /* onError */
+        (err) => {
+          streamWrapper.remove();
+          const fb = FALLBACK_RESPONSES[Math.floor(Math.random() * FALLBACK_RESPONSES.length)];
+          appendMessage(fb, 'bot');
+          if (loading) { loading.setAttribute('hidden', ''); loading.setAttribute('aria-hidden', 'true'); }
+          isSending = false;
+          updateSendBtn();
+          scrollConvToBottom();
+          trackEvent('chat_error', { error: err.message || 'unknown' });
+        }
+      );
     }
   }
 
@@ -751,6 +824,53 @@
       clearTimeout(tid);
       if (err.name === 'AbortError') throw new Error('timeout');
       throw err;
+    }
+  }
+
+  /* Recibe tokens via SSE y los pasa a callbacks:
+     onChunk(str), onDone(), onError(err) */
+  async function fetchReplyStream(question, history, onChunk, onDone, onError) {
+    const ctrl = new AbortController();
+    const tid  = setTimeout(() => { ctrl.abort(); onError(new Error('timeout')); }, 25000);
+
+    try {
+      const res = await fetch(CFG.api, {
+        method:  'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body:    JSON.stringify({ message: question, history, stream: true }),
+        signal:  ctrl.signal,
+      });
+      clearTimeout(tid);
+
+      if (!res.ok) { onError(new Error('HTTP ' + res.status)); return; }
+
+      const reader  = res.body.getReader();
+      const decoder = new TextDecoder();
+      let   buffer  = '';
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) { onDone(); break; }
+
+        buffer += decoder.decode(value, { stream: true });
+        const lines = buffer.split('\n');
+        buffer = lines.pop() || '';   // guardar línea incompleta
+
+        for (const line of lines) {
+          const trimmed = line.trim();
+          if (!trimmed.startsWith('data: ')) continue;
+          const data = trimmed.slice(6);
+          if (data === '[DONE]') { onDone(); return; }
+          try {
+            const parsed  = JSON.parse(data);
+            const content = parsed.content ?? parsed.choices?.[0]?.delta?.content;
+            if (content) onChunk(content);
+          } catch { /* ignorar JSON incompleto */ }
+        }
+      }
+    } catch (err) {
+      clearTimeout(tid);
+      if (err.name !== 'AbortError') onError(err);
     }
   }
 
