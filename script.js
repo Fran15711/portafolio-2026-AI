@@ -164,9 +164,10 @@
     });
 
     /* Reiniciar typewriter para que tome las frases del nuevo idioma */
-    if (!opts.silent) restartTypewriter();
-
-    if (!opts.silent) trackEvent('language_changed', { language: LANG });
+    if (!opts.silent) {
+      restartTypewriter();
+      replaySplash();   // replay del splash con el texto del nuevo idioma
+    }
   }
 
   function updateChips() {
@@ -191,6 +192,7 @@
 
   const SESSION = {
     id:        _sid(),
+    visitorId: _getVisitorId(),   // persiste entre sesiones (misma pestaña/device)
     startTime: Date.now(),
     utm:       {},
     ctx:       {},
@@ -212,6 +214,19 @@
 
   function _sid() {
     return 'sid_' + Date.now().toString(36) + '_' + Math.random().toString(36).slice(2, 9);
+  }
+
+  /* visitor_id persiste en localStorage — permite identificar visitas repetidas
+     del mismo navegador sin IP ni cookies de terceros                           */
+  function _getVisitorId() {
+    try {
+      let vid = localStorage.getItem('fn-vid');
+      if (!vid) {
+        vid = 'vid_' + Date.now().toString(36) + '_' + Math.random().toString(36).slice(2, 8);
+        localStorage.setItem('fn-vid', vid);
+      }
+      return vid;
+    } catch { return 'vid_unknown'; }
   }
 
   function captureUrlParams() {
@@ -282,6 +297,7 @@
     captureUrlParams();
     const { device, browser } = deviceInfo();
     trackEvent('session_start', {
+      visitor_id:   SESSION.visitorId,
       referrer:     document.referrer || '',
       utm_source:   SESSION.utm.utm_source   || '',
       utm_medium:   SESSION.utm.utm_medium   || '',
@@ -740,6 +756,57 @@
       clearTimeout(timer);
       exitSplash(true);
     });
+  }
+
+  /* ============================================================
+   * 8b. REPLAY DEL SPLASH al cambiar idioma
+   * El texto ya fue actualizado por applyLanguage (data-i18n).
+   * Solo reinicia la visibilidad, la barra y el contador.
+   * ============================================================ */
+  const REPLAY_MS = 2800;   // duración del replay (más corto que el splash original)
+  let splashReplaying = false;
+
+  function replaySplash() {
+    const splash = qs('#splash');
+    if (!splash || splashReplaying) return;
+    splashReplaying = true;
+
+    /* Re-mostrar splash (es fixed z-index:1000, cubre el sitio) */
+    splash.classList.remove('is-leaving');
+    splash.removeAttribute('aria-hidden');
+
+    /* Reiniciar animación de la barra forzando reflow */
+    const bar = qs('#splash-progress-bar');
+    if (bar) {
+      bar.style.animation = 'none';
+      bar.offsetHeight;  // force reflow
+      bar.style.animation = `s-progress ${REPLAY_MS / 1000}s linear 150ms forwards`;
+    }
+
+    /* Reiniciar contador */
+    const counterEl = qs('#splash-counter');
+    if (counterEl) {
+      counterEl.textContent = '0%';
+      const start = performance.now();
+      const dur   = REPLAY_MS - 200;
+      function tick(now) {
+        const pct = Math.min(100, Math.round(((now - start) / dur) * 100));
+        counterEl.textContent = pct + '%';
+        if (pct < 100 && splashReplaying) requestAnimationFrame(tick);
+      }
+      requestAnimationFrame(tick);
+    }
+
+    /* Cerrar automáticamente al terminar */
+    setTimeout(() => {
+      splash.classList.add('is-leaving');
+      setTimeout(() => {
+        splash.setAttribute('aria-hidden', 'true');
+        splashReplaying = false;
+        /* Restaurar barra para el próximo replay */
+        if (bar) bar.style.animation = '';
+      }, 420);
+    }, REPLAY_MS);
   }
 
   /* ============================================================
