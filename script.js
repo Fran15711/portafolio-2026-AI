@@ -26,7 +26,7 @@
     scrollThreshold:      60,   // px — scroll para activar navbar
     maxParticles:         55,   // cursor trail
     api:          '/api/chat',
-    trackUrl:     'https://script.google.com/macros/s/AKfycbxrp7xpsIvkKa1jVkbXB288u6mRIlfPknIwkQkaUsU3m7Cnikf7L3DoPEzh-7VpDpEa/exec',
+    trackUrl:     'https://script.google.com/macros/s/AKfycbx0k6TAsmluVViDj2hxQp2GaucT88WtSvpckj7uPcLtCd68omY6W6fmZx-a7x2aZtdr/exec',
   };
 
   /* ============================================================
