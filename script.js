@@ -36,13 +36,178 @@
   const isTouchDevice  = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
 
   /* ============================================================
-   * 2. SESIÓN + UTM PARAMS
+   * 1b. i18n — diccionario ES / EN
    * ============================================================ */
+  let LANG = 'es';
+  function getLang() { return LANG; }
+
+  const I18N = {
+    es: {
+      'splash.greeting': 'Hola.',
+      'splash.l1': 'Si estás viendo esto, quiero trabajar contigo.',
+      'splash.l2': 'Gracias por tu tiempo, tu interés y tu buena intuición.',
+      'splash.l3': 'Este portafolio reúne evidencias y resultados de estrategias y proyectos de los que he sido responsable.',
+      'splash.loading': 'Cargando portafolio',
+      'splash.note': 'Versión en construcción — todavía estoy puliendo detalles.',
+      'splash.skip': 'Saltar',
+      'chat.title': 'Pregúntame antes de la entrevista.',
+      'chat.sub': 'Es una pre-entrevista: pregúntame por mi experiencia, mis proyectos o qué hago fuera del trabajo.<br>Te responde una versión mía entrenada con todo lo que he hecho.',
+      'chat.placeholder': 'Escríbeme una pregunta…',
+      'chat.send': 'Enviar pregunta',
+      'chat.disclaimer_pre': 'El asistente puede cometer errores. Para información exacta, revisa las evidencias o ',
+      'chat.disclaimer_link': 'escríbeme directamente',
+      'chat.scrollInvite': 'O explora el portafolio directamente ↓',
+      'chat.error': 'Algo falló de mi lado. Puedes intentar de nuevo o escribirme directo por correo.',
+      'mv.hint': 'Arrastra para rotar',
+      'chips': [
+        { q: '¿Cómo piensas?',                   t: 'como_piensas' },
+        { q: '¿Qué tan medible es tu trabajo?',  t: 'trabajo_medible' },
+        { q: '¿Qué harías en mi equipo?',        t: 'que_harias_equipo' },
+      ],
+      'typewriter': [
+        'Pregúntame qué hay detrás del CV…',
+        'Pregúntame cómo pienso cuando entro a un problema…',
+        'Pregúntame qué resultados puedo comprobar sin adornos…',
+        'Pregúntame cómo convertí Galga en un sistema medible…',
+        'Pregúntame por qué mi perfil mezcla creatividad, datos y ventas…',
+        'Pregúntame cómo uso IA sin vender humo…',
+        'Pregúntame qué aprendí empezando desde cero…',
+        'Pregúntame cómo trabajo con ventas cuando los leads no sirven…',
+      ],
+    },
+    en: {
+      'splash.greeting': 'Hello.',
+      'splash.l1': "If you're seeing this, I want to work with you.",
+      'splash.l2': 'Thank you for your time, your interest and your good instinct.',
+      'splash.l3': "This portfolio brings together evidence and results from strategies and projects I've been responsible for.",
+      'splash.loading': 'Loading portfolio',
+      'splash.note': "Work in progress — I'm still polishing details.",
+      'splash.skip': 'Skip',
+      'chat.title': 'Interview me before the interview.',
+      'chat.sub': "It's a pre-interview: ask me about my experience, my projects, or what I do outside of work.<br>You're talking to a version of me trained on everything I've done.",
+      'chat.placeholder': 'Ask me a question…',
+      'chat.send': 'Send question',
+      'chat.disclaimer_pre': 'The assistant can make mistakes. For exact details, check the evidence or ',
+      'chat.disclaimer_link': 'reach out directly',
+      'chat.scrollInvite': 'Or explore the portfolio directly ↓',
+      'chat.error': 'Something broke on my end. Try again, or email me directly.',
+      'mv.hint': 'Drag to rotate',
+      'chips': [
+        { q: 'How do you think?',                 t: 'how_you_think' },
+        { q: 'How measurable is your work?',      t: 'work_measurable' },
+        { q: 'What would you do on my team?',     t: 'on_my_team' },
+      ],
+      'typewriter': [
+        'Ask me what sits behind the résumé…',
+        'Ask me how I think when I enter a messy problem…',
+        'Ask me what results I can prove without dressing them up…',
+        'Ask me how I turned Galga into a more measurable system…',
+        'Ask me why my profile mixes creativity, data and sales…',
+        'Ask me how I use AI without the hype…',
+        'Ask me what I learned by starting from zero…',
+        'Ask me how I work with sales when the leads are not good enough…',
+      ],
+    },
+  };
+
+  function t(key) {
+    const d = I18N[LANG] || I18N.es;
+    return d[key] != null ? d[key] : (I18N.es[key] != null ? I18N.es[key] : key);
+  }
+
+  /* Detecta idioma: ?lang= > localStorage > navegador > 'es' */
+  function detectAndApplyLang() {
+    let lang = 'es';
+    try {
+      const q = new URLSearchParams(window.location.search).get('lang');
+      const saved = localStorage.getItem('fn-lang');
+      if (q === 'en' || q === 'es') lang = q;
+      else if (saved === 'en' || saved === 'es') lang = saved;
+      else if ((navigator.language || '').toLowerCase().startsWith('en')) lang = 'en';
+    } catch (_) {}
+    applyLanguage(lang, { silent: true });
+  }
+
+  /* Aplica idioma a TODA la interfaz */
+  function applyLanguage(lang, opts = {}) {
+    LANG = (lang === 'en') ? 'en' : 'es';
+    try { localStorage.setItem('fn-lang', LANG); } catch (_) {}
+    document.documentElement.lang = LANG;
+
+    const d = I18N[LANG];
+
+    /* Texto, HTML, placeholders y aria-labels marcados con data-i18n* */
+    qsa('[data-i18n]').forEach(el => {
+      const k = el.dataset.i18n; if (d[k] != null) el.textContent = d[k];
+    });
+    qsa('[data-i18n-html]').forEach(el => {
+      const k = el.dataset.i18nHtml; if (d[k] != null) el.innerHTML = d[k];
+    });
+    qsa('[data-i18n-ph]').forEach(el => {
+      const k = el.dataset.i18nPh; if (d[k] != null) el.setAttribute('placeholder', d[k]);
+    });
+    qsa('[data-i18n-aria]').forEach(el => {
+      const k = el.dataset.i18nAria; if (d[k] != null) el.setAttribute('aria-label', d[k]);
+    });
+
+    /* Chips sugeridos */
+    updateChips();
+
+    /* Botones de idioma (navbar + splash) */
+    qsa('#lang-btn-es, #splash-lang-es').forEach(b => {
+      b.classList.toggle('is-active', LANG === 'es');
+      b.setAttribute('aria-pressed', String(LANG === 'es'));
+    });
+    qsa('#lang-btn-en, #splash-lang-en').forEach(b => {
+      b.classList.toggle('is-active', LANG === 'en');
+      b.setAttribute('aria-pressed', String(LANG === 'en'));
+    });
+
+    /* Reiniciar typewriter para que tome las frases del nuevo idioma */
+    if (!opts.silent) restartTypewriter();
+
+    if (!opts.silent) trackEvent('language_changed', { language: LANG });
+  }
+
+  function updateChips() {
+    const chipsEl = qs('#chat-chips');
+    if (!chipsEl) return;
+    const chips = qsa('.chat__chip', chipsEl);
+    const defs  = I18N[LANG].chips || [];
+    chips.forEach((chip, i) => {
+      if (defs[i]) {
+        chip.textContent = defs[i].q;
+        chip.dataset.question   = defs[i].q;
+        chip.dataset.trackLabel = defs[i].t;
+      }
+    });
+  }
+
+
+  /* ============================================================
+   * 2. SESIÓN + TRACKING (modelo de sesión)
+   * ============================================================ */
+  const TRACK_DEBUG = true;   // false en producción para silenciar consola
+
   const SESSION = {
     id:        _sid(),
     startTime: Date.now(),
-    utm: {},
-    ctx: {},
+    utm:       {},
+    ctx:       {},
+    /* acumuladores para el resumen de sesión */
+    sectionsSeen:          new Set(),
+    sectionDurations:      {},     // { sectionId: ms acumulados }
+    currentSection:        null,
+    sectionEnterTime:      null,
+    projectsClicked:       [],
+    evidenceClicked:       [],
+    certificationsClicked: [],
+    chatQuestions:         [],
+    externalLinksClicked:  [],
+    contactClicked:        false,
+    cvClicked:             false,
+    modelViewerInteracted: false,
+    ended:                 false,
   };
 
   function _sid() {
@@ -57,43 +222,158 @@
       .forEach(k => { if (p.has(k)) SESSION.ctx[k] = p.get(k); });
   }
 
+  function deviceInfo() {
+    const ua = navigator.userAgent || '';
+    let device = 'desktop';
+    if (/iPad|Tablet|PlayBook|Silk/i.test(ua) || (/Android/i.test(ua) && !/Mobile/i.test(ua))) device = 'tablet';
+    else if (/Mobi|Android|iPhone|iPod|Windows Phone/i.test(ua)) device = 'mobile';
+    let browser = 'otro';
+    if (/Edg\//.test(ua))            browser = 'Edge';
+    else if (/OPR\/|Opera/.test(ua)) browser = 'Opera';
+    else if (/Chrome\//.test(ua))    browser = 'Chrome';
+    else if (/Firefox\//.test(ua))   browser = 'Firefox';
+    else if (/Safari\//.test(ua))    browser = 'Safari';
+    return { device, browser };
+  }
+
   /* ============================================================
-   * 3. TRACKING CENTRALIZADO
+   * 3. TRACKING — envío a Google Sheets (Apps Script)
    * ============================================================ */
   function trackEvent(name, data = {}) {
     const payload = {
-      event:     name,
-      ts:        new Date().toISOString(),
-      sessionId: SESSION.id,
-      path:      window.location.pathname,
-      url:       window.location.href,
-      referrer:  document.referrer || null,
-      vp:        { w: window.innerWidth, h: window.innerHeight },
-      ...SESSION.utm,
-      ...SESSION.ctx,
+      event_name: name,
+      timestamp:  new Date().toISOString(),
+      session_id: SESSION.id,
+      language:   getLang(),
+      page_url:   window.location.href,
       ...data,
     };
 
-    /* ─── DEV output ─── */
-    console.log('[FN:track]', name, data);
+    if (TRACK_DEBUG) console.log('[track \u2192]', name, payload);
 
-    /* ─── Envío a Google Sheets via Apps Script Web App ─── */
-    if (CFG.trackUrl) {
-      try {
-        /* keepalive:true asegura que el request llegue aunque la página cambie */
-        fetch(CFG.trackUrl, {
-          method:    'POST',
-          mode:      'no-cors',   /* Apps Script no devuelve CORS headers en preflight */
-          keepalive: true,
-          body:      JSON.stringify(payload),
-        });
-      } catch (_) { /* silencioso — el portafolio no depende del tracking */ }
+    sendTracking(payload, name === 'session_end');
+  }
+
+  function sendTracking(payload, preferBeacon) {
+    const url = CFG.trackUrl;
+    if (!url) { if (TRACK_DEBUG) console.warn('[track] TRACKING_ENDPOINT vacío — no se envía'); return; }
+    const body = JSON.stringify(payload);
+    try {
+      if (preferBeacon && navigator.sendBeacon) {
+        const ok = navigator.sendBeacon(url, new Blob([body], { type: 'text/plain;charset=UTF-8' }));
+        if (TRACK_DEBUG) console.log('[track] sendBeacon:', ok ? 'enviado' : 'FALLÓ');
+        return;
+      }
+      fetch(url, {
+        method:    'POST',
+        mode:      'no-cors',
+        keepalive: true,
+        headers:   { 'Content-Type': 'text/plain;charset=UTF-8' },
+        body,
+      }).then(() => { if (TRACK_DEBUG) console.log('[track] fetch enviado (no-cors)'); })
+        .catch(err => { if (TRACK_DEBUG) console.warn('[track] fetch error:', err); });
+    } catch (e) {
+      if (TRACK_DEBUG) console.warn('[track] excepción:', e);
     }
+  }
 
-    /* ─── Otros analytics (activar cuando estén listos) ───
-    if (window.gtag)       window.gtag('event', name, payload);
-    if (window.posthog)    window.posthog.capture(name, payload);
-    ──────────────────────────────────────────────────────── */
+  /* ── Inicio de sesión ── */
+  function startSession() {
+    captureUrlParams();
+    const { device, browser } = deviceInfo();
+    trackEvent('session_start', {
+      referrer:     document.referrer || '',
+      utm_source:   SESSION.utm.utm_source   || '',
+      utm_medium:   SESSION.utm.utm_medium   || '',
+      utm_campaign: SESSION.utm.utm_campaign || '',
+      company:      SESSION.ctx.company || '',
+      role:         SESSION.ctx.role   || '',
+      source:       SESSION.ctx.source || '',
+      device, browser,
+      viewport:     window.innerWidth + 'x' + window.innerHeight,
+    });
+  }
+
+  /* ── Tiempo por sección ── */
+  function flushSectionTime() {
+    if (SESSION.currentSection && SESSION.sectionEnterTime) {
+      const dt = Date.now() - SESSION.sectionEnterTime;
+      SESSION.sectionDurations[SESSION.currentSection] =
+        (SESSION.sectionDurations[SESSION.currentSection] || 0) + dt;
+    }
+    SESSION.sectionEnterTime = Date.now();
+  }
+  function setCurrentSection(id) {
+    if (SESSION.currentSection === id) return;
+    flushSectionTime();
+    SESSION.currentSection = id;
+    SESSION.sectionEnterTime = Date.now();
+  }
+
+  /* ── Fin de sesión con resumen ── */
+  function endSession() {
+    if (SESSION.ended) return;
+    SESSION.ended = true;
+    flushSectionTime();
+
+    const durations = {};
+    let topSection = '', topSecs = 0;
+    Object.keys(SESSION.sectionDurations).forEach(k => {
+      const s = Math.round(SESSION.sectionDurations[k] / 1000);
+      durations[k] = s;
+      if (s > topSecs) { topSecs = s; topSection = k; }
+    });
+
+    trackEvent('session_end', {
+      duration_seconds:       Math.round((Date.now() - SESSION.startTime) / 1000),
+      sections_seen:          Array.from(SESSION.sectionsSeen),
+      section_durations:      durations,
+      top_section:            topSection,
+      top_section_seconds:    topSecs,
+      projects_clicked:       SESSION.projectsClicked,
+      evidence_clicked:       SESSION.evidenceClicked,
+      certifications_clicked: SESSION.certificationsClicked,
+      chat_questions:         SESSION.chatQuestions,
+      external_links_clicked: SESSION.externalLinksClicked,
+      contact_clicked:        SESSION.contactClicked,
+      cv_clicked:             SESSION.cvClicked,
+      model_viewer_interacted:SESSION.modelViewerInteracted,
+    });
+  }
+
+  /* ── Helpers que trackean Y acumulan para el resumen ── */
+  function trackProjectClick(id, name, category) {
+    if (name && SESSION.projectsClicked.indexOf(name) === -1) SESSION.projectsClicked.push(name);
+    trackEvent('project_click', { project_id: id, project_name: name, category: category || '' });
+  }
+  function trackEvidenceClick(projectName, label, url) {
+    if (label) SESSION.evidenceClicked.push(label);
+    trackEvent('evidence_click', { project_name: projectName, evidence_label: label, evidence_url: url });
+  }
+  function trackCertClick(name, url) {
+    if (name) SESSION.certificationsClicked.push(name);
+    trackEvent('certification_click', { certification_name: name, certification_url: url });
+  }
+  function trackChatQuestion(q) {
+    if (q) SESSION.chatQuestions.push(q.slice(0, 160));
+    trackEvent('chat_question', { question: (q || '').slice(0, 300) });
+  }
+  function trackExternalLink(label, url) {
+    SESSION.externalLinksClicked.push(label || url);
+    trackEvent('external_link_click', { link_label: label || '', link_url: url || '' });
+  }
+  function trackContactClick(label) {
+    SESSION.contactClicked = true;
+    trackEvent('contact_click', { element_label: label || '' });
+  }
+  function trackCvClick(label) {
+    SESSION.cvClicked = true;
+    trackEvent('cv_click', { element_label: label || '' });
+  }
+  function trackModelViewer() {
+    if (SESSION.modelViewerInteracted) return;
+    SESSION.modelViewerInteracted = true;
+    trackEvent('model_viewer_interaction', {});
   }
 
   /* ============================================================
@@ -398,18 +678,7 @@
   const chatHistory = [];
   const CHAT_HISTORY_LIMIT = 6; /* pares usuario/asistente */
 
-  const TYPEWRITER_PHRASES = [
-    'Pregúntame cómo mis pasatiempos explican por qué elegí esta carrera\u2026',
-    'Pregúntame qué hay detrás del CV\u2026',
-    'Pregúntame cómo pienso cuando entro a un problema\u2026',
-    'Pregúntame qué resultados puedo comprobar sin adornos\u2026',
-    'Pregúntame cómo convertí Galga en un sistema medible\u2026',
-    'Pregúntame por qué mezclo creatividad, datos y ventas\u2026',
-    'Pregúntame cómo uso IA sin vender humo\u2026',
-    'Pregúntame qué aprendí empezando desde cero\u2026',
-    'Pregúntame cómo trabajo con ventas cuando los leads no sirven\u2026',
-  ];
-
+  
   const FALLBACK_RESPONSES = [
     'Hola. Soy el asistente de Francisco. Por ahora no estoy conectado a la API, pero el portafolio tiene todo: 23 marcas con evidencias reales, cartas de recomendación verificables y un case study de $26.1M MXN en revenue atribuido. Selecciona cualquier hexágono para explorar.',
     'En este momento no tengo conexión al modelo de lenguaje. Lo que sí existe: reportes reales, evidencias de proyectos y tres cartas de recomendación firmadas. Revisa la sección de Galga o los hexágonos para ir directo a lo que importa.',
@@ -521,49 +790,62 @@
   /* ============================================================
    * 9. TYPEWRITER
    * ============================================================ */
+  function currentTypewriter() {
+    return (I18N[LANG] && I18N[LANG].typewriter) || I18N.es.typewriter;
+  }
+
+  let twState = null;
+
   function initTypewriter() {
     const container = qs('#chat-typewriter');
     const textEl    = qs('#typewriter-text');
     if (!container || !textEl) return;
 
-    /* Con reduced-motion: mostrar frase fija sin animación */
     if (reducedMotion) {
-      textEl.textContent = TYPEWRITER_PHRASES[0];
+      textEl.textContent = currentTypewriter()[0];
       return;
     }
 
-    let phraseIndex = 0;
-    let charIndex   = 0;
-    let isDeleting  = false;
+    twState = { phraseIndex: 0, charIndex: 0, isDeleting: false, textEl };
+    runTypewriter();
+  }
 
-    function tick() {
-      const phrase = TYPEWRITER_PHRASES[phraseIndex];
+  function runTypewriter() {
+    if (!twState) return;
+    const phrases = currentTypewriter();
+    const phrase  = phrases[twState.phraseIndex % phrases.length];
 
-      if (!isDeleting) {
-        textEl.textContent = phrase.slice(0, charIndex + 1);
-        charIndex++;
-        if (charIndex === phrase.length) {
-          /* Frase completa → trackear y pausar antes de borrar */
-          trackEvent('suggested_prompt_seen', { phrase });
-          isDeleting = true;
-          twTimer = setTimeout(tick, CFG.pauseAfterType);
-          return;
-        }
-        twTimer = setTimeout(tick, CFG.typingSpeed);
-      } else {
-        textEl.textContent = phrase.slice(0, charIndex - 1);
-        charIndex--;
-        if (charIndex === 0) {
-          isDeleting  = false;
-          phraseIndex = (phraseIndex + 1) % TYPEWRITER_PHRASES.length;
-          twTimer = setTimeout(tick, CFG.pauseBeforeType);
-          return;
-        }
-        twTimer = setTimeout(tick, CFG.deletingSpeed);
+    if (!twState.isDeleting) {
+      twState.textEl.textContent = phrase.slice(0, twState.charIndex + 1);
+      twState.charIndex++;
+      if (twState.charIndex === phrase.length) {
+        twState.isDeleting = true;
+        twTimer = setTimeout(runTypewriter, CFG.pauseAfterType);
+        return;
       }
+      twTimer = setTimeout(runTypewriter, CFG.typingSpeed);
+    } else {
+      twState.textEl.textContent = phrase.slice(0, twState.charIndex - 1);
+      twState.charIndex--;
+      if (twState.charIndex === 0) {
+        twState.isDeleting  = false;
+        twState.phraseIndex = (twState.phraseIndex + 1) % phrases.length;
+        twTimer = setTimeout(runTypewriter, CFG.pauseBeforeType);
+        return;
+      }
+      twTimer = setTimeout(runTypewriter, CFG.deletingSpeed);
     }
+  }
 
-    twTimer = setTimeout(tick, CFG.pauseBeforeType);
+  /* Reinicia el typewriter al cambiar idioma */
+  function restartTypewriter() {
+    if (twTimer) { clearTimeout(twTimer); twTimer = null; }
+    const textEl = qs('#typewriter-text');
+    if (!textEl) return;
+    if (reducedMotion) { textEl.textContent = currentTypewriter()[0]; return; }
+    twState = { phraseIndex: 0, charIndex: 0, isDeleting: false, textEl };
+    textEl.textContent = '';
+    runTypewriter();
   }
 
   /* ============================================================
@@ -656,7 +938,7 @@
       const loading = qs('#chat-loading');
       if (loading) { loading.removeAttribute('hidden'); loading.removeAttribute('aria-hidden'); }
 
-      trackEvent('chat_question_submitted', { question: text.slice(0, 300), question_length: text.length });
+      trackChatQuestion(text);
 
       /* Guardar mensaje del usuario en historial */
       chatHistory.push({ role: 'user', content: text });
@@ -718,8 +1000,7 @@
         /* onError */
         (err) => {
           streamWrapper.remove();
-          const fb = FALLBACK_RESPONSES[Math.floor(Math.random() * FALLBACK_RESPONSES.length)];
-          appendMessage(fb, 'bot');
+          appendMessage(t('chat.error'), 'bot');
           if (loading) { loading.setAttribute('hidden', ''); loading.setAttribute('aria-hidden', 'true'); }
           isSending = false;
           updateSendBtn();
@@ -845,6 +1126,7 @@
         method:  'POST',
         headers: { 'Content-Type': 'application/json' },
         body:    JSON.stringify({
+          language: getLang(),
           message: question,
           history: historyWithoutLast,
         }),
@@ -873,7 +1155,7 @@
       const res = await fetch(CFG.api, {
         method:  'POST',
         headers: { 'Content-Type': 'application/json' },
-        body:    JSON.stringify({ message: question, history, stream: true }),
+        body:    JSON.stringify({ message: question, history, stream: true, language: getLang() }),
         signal:  ctrl.signal,
       });
       clearTimeout(tid);
@@ -945,22 +1227,34 @@
    * 12. SCROLL REVEAL + SECTION TRACKING
    * ============================================================ */
   function initScrollReveal() {
-    /* 1. Secciones principales */
+    /* 1. Secciones principales: reveal + section_view + tiempo */
     const sectionObs = new IntersectionObserver(entries => {
       entries.forEach(entry => {
         if (!entry.isIntersecting) return;
         entry.target.classList.add('is-visible');
-        const sid = entry.target.dataset.trackSection;
+        const sid   = entry.target.id;
+        const label = entry.target.dataset.sectionLabel || entry.target.dataset.trackSection || sid;
         if (sid && !viewedSections.has(sid)) {
           viewedSections.add(sid);
-          trackEvent('section_viewed', { section: sid });
+          SESSION.sectionsSeen.add(sid);
+          trackEvent('section_view', { section_id: sid, section_label: label });
         }
-        sectionObs.unobserve(entry.target);
       });
     }, { rootMargin: '-8% 0px', threshold: 0.04 });
 
-    qsa('.s-metricas,.s-proyectos,.s-galga,.s-experiencia,.s-certificaciones,.s-sobre-mi,.s-contacto')
-      .forEach(s => sectionObs.observe(s));
+    qsa('section[id]').forEach(s => sectionObs.observe(s));
+
+    /* 1b. Sección "actual" para medir tiempo (la más visible) */
+    const timeObs = new IntersectionObserver(entries => {
+      let best = null, bestRatio = 0;
+      entries.forEach(e => {
+        if (e.isIntersecting && e.intersectionRatio > bestRatio) {
+          bestRatio = e.intersectionRatio; best = e.target;
+        }
+      });
+      if (best && bestRatio >= 0.35) setCurrentSection(best.id);
+    }, { threshold: [0.35, 0.6, 0.9] });
+    qsa('section[id]').forEach(s => timeObs.observe(s));
 
     /* 2. Hex wraps — stagger por index */
     const hexObs = new IntersectionObserver(entries => {
@@ -1056,11 +1350,7 @@
     /* Abrir/actualizar drawer */
     openDrawer(brand);
 
-    trackEvent('project_selected', {
-      brand: brand.name,
-      sector: brand.sector,
-      index,
-    });
+    trackProjectClick(index, brand.name, brand.sectorLabel || brand.sector);
   }
 
   function deactivateAllHexes() {
@@ -1171,9 +1461,6 @@
       /* Click: abrir evidencia */
       btn.addEventListener('click', e => {
         e.preventDefault();
-        trackEvent('project_evidence_clicked', {
-          brand: brand.name, tipo: ev.tipo, label: ev.label,
-        });
 
         /* URL pendiente: feedback visual claro */
         if (ev.url.startsWith('[PLACEHOLDER')) {
@@ -1190,7 +1477,7 @@
           return;
         }
 
-        trackEvent('external_link_clicked', { url: ev.url, label: ev.label });
+        trackEvidenceClick(activeHexIndex >= 0 && hexData[activeHexIndex] ? hexData[activeHexIndex].name : '', ev.label, ev.url);
 
         if (isFramable(ev.url)) {
           openPopup(ev.url);
@@ -1379,14 +1666,14 @@
         const url   = card.href || card.getAttribute('href') || '';
         const label = card.dataset.trackLabel || '';
 
-        trackEvent('certification_clicked', { label, url });
+        trackCertClick(label, url);
 
         if (!url || url.startsWith('[PLACEHOLDER')) {
           console.warn('[FN] Cert URL pendiente:', label);
           return; /* sin URL no hay acción, pero no navega a href roto */
         }
 
-        trackEvent('external_link_clicked', { url, label });
+        trackExternalLink(label, url);
 
         /* Los certificados externos (Skillshop, HubSpot) abren en nueva pestaña.
            Si en algún momento apuntan a GitHub Pages propias, usarán iframe. */
@@ -1402,7 +1689,27 @@
   /* ============================================================
    * 18. MODEL-VIEWER
    * ============================================================ */
-  function initModelViewer() { /* lógica movida a initModelViewerProgress */ }
+  function initModelViewer() {
+    const mv = qs('#mimaki-viewer');
+    if (!mv) return;
+    const hint = qs('#mv-hint');
+
+    /* Primera interacción real: trackear y ocultar hint */
+    const onInteract = () => {
+      trackModelViewer();
+      if (hint) hint.classList.add('is-hidden');
+    };
+    mv.addEventListener('pointerdown', onInteract, { passive: true });
+    mv.addEventListener('touchstart',  onInteract, { passive: true });
+
+    /* En mobile, mientras el dedo está sobre el modelo, evitar que la
+       página haga scroll (touch-action:none en CSS ya lo maneja, pero
+       reforzamos por si el navegador inicia un scroll-chain). */
+    mv.addEventListener('touchmove', (e) => {
+      /* el componente ya consume el gesto; solo cortamos el bubbling */
+      e.stopPropagation();
+    }, { passive: true });
+  }
 
   /* ============================================================
    * 19. CONTACTO
@@ -1414,11 +1721,9 @@
       item.addEventListener('click', () => {
         const label = item.dataset.trackLabel || item.querySelector('.contacto__item-label')?.textContent || '';
         const url   = item.href || '';
-        const evt   = item.dataset.track || 'contact_clicked';
-        trackEvent(evt, { label, url });
-        if (url && !url.startsWith('mailto:') && !url.startsWith('#')) {
-          trackEvent('external_link_clicked', { url, label });
-        }
+        const evt = item.dataset.track || 'contact_clicked';
+        if (evt === 'cv_clicked' || evt === 'cv_click') trackCvClick(label);
+        else trackContactClick(label);
       });
     });
   }
@@ -1524,22 +1829,29 @@
       const el = e.target.closest('[data-track]');
       if (!el) return;
 
-      /* Los handlers específicos (certs, contacto, etc.) ya trackean.
-         Este solo cubre elementos sin handler dedicado.              */
       const evt   = el.dataset.track;
-      const label = el.dataset.trackLabel || '';
+      const label = el.dataset.trackLabel || el.textContent.trim().slice(0, 60) || '';
       const url   = el.href || '';
 
-      if (['certification_clicked', 'contact_clicked', 'cv_downloaded',
-           'suggested_prompt_clicked', 'project_evidence_clicked'].includes(evt)) return;
+      /* Handlers dedicados ya trackean estos */
+      if (['certification_click','certification_clicked','evidence_click',
+           'project_click','chat_focus','chat_question_submitted',
+           'suggested_prompt_clicked'].includes(evt)) return;
 
-      trackEvent(evt, { label, url });
-
-      /* Link externo */
-      if (url && !url.startsWith(window.location.origin) &&
-          !url.startsWith('mailto:') && !url.startsWith('#') &&
-          !url.startsWith('[PLACEHOLDER')) {
-        trackEvent('external_link_clicked', { url, label });
+      /* Contacto / CV / links externos */
+      if (evt === 'contact_clicked' || evt === 'contact_click') {
+        trackContactClick(label);
+      } else if (evt === 'cv_clicked' || evt === 'cv_click' || evt === 'cv_downloaded') {
+        trackCvClick(label);
+      } else if (evt === 'external_link_clicked' || evt === 'external_link_click') {
+        trackExternalLink(label, url);
+      } else {
+        /* cualquier otro data-track no crítico */
+        if (url && !url.startsWith(window.location.origin) &&
+            !url.startsWith('mailto:') && !url.startsWith('#') &&
+            !url.startsWith('[PLACEHOLDER')) {
+          trackExternalLink(label, url);
+        }
       }
     });
   }
@@ -1648,47 +1960,20 @@
   }
 
   function initLanguageSwitcher() {
-    const btnEs = qs('#lang-btn-es');
-    const btnEn = qs('#lang-btn-en');
-    if (!btnEs || !btnEn) return;
-
-    const translations = {
-      es: {
-        'chat__title':    'Pregúntame antes de la entrevista.',
-        'chat__sub':      'Es una pre-entrevista: pregúntame por mi experiencia, mis proyectos o qué hago fuera del trabajo.<br>Te responde una versión mía entrenada con todo lo que he hecho.',
-        '#chat-chips .chat__chip:nth-child(1)': '¿Cómo piensa Francisco?',
-        '#chat-chips .chat__chip:nth-child(2)': '¿Qué tan medible es su trabajo?',
-        '#chat-chips .chat__chip:nth-child(3)': '¿Qué haría en mi equipo?',
-      },
-      en: {
-        'chat__title':    'Interview me before the interview.',
-        'chat__sub':      "It's a pre-interview: ask me about my experience, my projects, or what I do outside of work.<br>You're talking to a version of me trained on everything I've done.",
-        '#chat-chips .chat__chip:nth-child(1)': 'How does Francisco think?',
-        '#chat-chips .chat__chip:nth-child(2)': 'How measurable is his work?',
-        '#chat-chips .chat__chip:nth-child(3)': 'What would he do on my team?',
-      }
+    /* Navbar + splash comparten la misma lógica */
+    const bind = (id, lang) => {
+      const btn = qs(id);
+      if (btn) btn.addEventListener('click', () => applyLanguage(lang));
     };
-
-    function applyLang(lang) {
-      const t = translations[lang] || translations.es;
-      const title = qs('.chat__title');
-      const sub   = qs('.chat__sub');
-      if (title) title.textContent = t['chat__title'];
-      if (sub)   sub.innerHTML     = t['chat__sub'];
-      document.documentElement.lang = lang;
-      btnEs.classList.toggle('is-active', lang === 'es');
-      btnEn.classList.toggle('is-active', lang === 'en');
-      btnEs.setAttribute('aria-pressed', String(lang === 'es'));
-      btnEn.setAttribute('aria-pressed', String(lang === 'en'));
-    }
-
-    btnEs.addEventListener('click', () => applyLang('es'));
-    btnEn.addEventListener('click', () => applyLang('en'));
+    bind('#lang-btn-es', 'es');
+    bind('#lang-btn-en', 'en');
+    bind('#splash-lang-es', 'es');
+    bind('#splash-lang-en', 'en');
   }
 
   function init() {
-    captureUrlParams();
-    trackEvent('page_view');
+    detectAndApplyLang();   // idioma antes de cualquier render de texto
+    startSession();         // session_start (reemplaza page_view)
 
     initSplash();
     initNavbar();
@@ -1710,17 +1995,21 @@
     initCurrentYear();
     initGlobalKeys();
     initGlobalTracking();
+    initSessionEnd();
 
     /* Cursor trail: solo desktop y sin reduced-motion */
     if (!isTouchDevice && !reducedMotion) initCursorTrail();
+  }
 
-    /* Duración de sesión al salir */
-    window.addEventListener('beforeunload', () => {
-      trackEvent('session_duration', {
-        ms: Date.now() - SESSION.startTime,
-        s:  Math.floor((Date.now() - SESSION.startTime) / 1000),
-      });
+  /* Fin de sesión: lo más confiable en mobile es pagehide + visibilitychange */
+  function initSessionEnd() {
+    const fire = () => endSession();
+    window.addEventListener('pagehide', fire);
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState === 'hidden') fire();
     });
+    /* beforeunload como último respaldo en desktop */
+    window.addEventListener('beforeunload', fire);
   }
 
   document.addEventListener('DOMContentLoaded', init);
