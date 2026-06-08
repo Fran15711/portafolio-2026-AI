@@ -1,0 +1,250 @@
+// ================================================================
+// PORTAFOLIO TRACKER v2 — Google Apps Script
+// Francisco Noriega · francisconoriegaret15@gmail.com
+//
+// Modelo de 3 hojas: Sessions · Events · Session_Summary
+// Correos solo en: session_start (nuevo visitante) y session_end (resumen)
+//
+// INSTALACIÓN (pasos detallados al final del chat):
+//   1. Crea un Google Sheet nuevo.
+//   2. Extensiones → Apps Script → pega TODO este código.
+//   3. Guarda. Desplegar → Nueva implementación → Web App:
+//        Ejecutar como: Yo
+//        Quién tiene acceso: Cualquiera
+//   4. Autoriza permisos (Sheets + Gmail).
+//   5. Copia la URL /exec y pégala en script.js (CFG.trackUrl).
+//   6. Si cambias el código: Desplegar → Gestionar implementaciones
+//      → editar → Nueva versión (si no, no se aplican los cambios).
+// ================================================================
+
+const EMAIL_DESTINO = 'francisconoriegaret15@gmail.com';
+const ZONA          = 'America/Mexico_City';
+
+// Headers exactos de cada hoja
+const HEADERS = {
+  Sessions: [
+    'timestamp_start','session_id','language','page_url','referrer',
+    'utm_source','utm_medium','utm_campaign','company','role','source',
+    'device','browser','viewport','status',
+  ],
+  Events: [
+    'timestamp','session_id','event_name','section_id','section_label',
+    'element_id','element_label','event_value','page_url','language','metadata_json',
+  ],
+  Session_Summary: [
+    'timestamp_end','session_id','duration_seconds','language','sections_seen',
+    'top_section','top_section_seconds','projects_clicked','evidence_clicked',
+    'certifications_clicked','chat_questions','external_links_clicked',
+    'contact_clicked','cv_clicked','summary_json',
+  ],
+};
+
+// ── Entry point ───────────────────────────────────────────────────
+function doPost(e) {
+  try {
+    const data = JSON.parse((e && e.postData && e.postData.contents) || '{}');
+    const evt  = data.event_name || data.event || '';
+
+    if (!data.session_id) return json({ ok: false, error: 'missing session_id' });
+
+    if (evt === 'session_start') {
+      writeSession(data);
+      emailNuevoVisitante(data);
+    } else if (evt === 'session_end') {
+      writeSummary(data);
+      marcarCompletada(data.session_id);
+      emailResumen(data);
+    } else {
+      writeEvent(data);
+    }
+    return json({ ok: true });
+
+  } catch (err) {
+    return json({ ok: false, error: String(err) });
+  }
+}
+
+// Permite probar el deploy desde el navegador (GET)
+function doGet() {
+  return json({ ok: true, msg: 'Portafolio tracker activo' });
+}
+
+// ── Hoja: obtener o crear con headers ─────────────────────────────
+function getSheet(name) {
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  let sh = ss.getSheetByName(name);
+  if (!sh) {
+    sh = ss.insertSheet(name);
+    sh.appendRow(HEADERS[name]);
+    sh.setFrozenRows(1);
+    sh.getRange(1, 1, 1, HEADERS[name].length)
+      .setBackground('#111111').setFontColor('#ffffff').setFontWeight('bold');
+  }
+  return sh;
+}
+
+// ── Escribir session_start en Sessions ────────────────────────────
+function writeSession(d) {
+  const sh = getSheet('Sessions');
+  sh.appendRow([
+    nowStr(),
+    d.session_id || '',
+    d.language || '',
+    d.page_url || '',
+    d.referrer || 'Directo',
+    d.utm_source || '', d.utm_medium || '', d.utm_campaign || '',
+    d.company || '', d.role || '', d.source || '',
+    d.device || '', d.browser || '', d.viewport || '',
+    'active',
+  ]);
+}
+
+// ── Escribir evento normal en Events ──────────────────────────────
+function writeEvent(d) {
+  const sh = getSheet('Events');
+
+  // element_label legible según el tipo de evento
+  const label =
+    d.project_name || d.evidence_label || d.certification_name ||
+    d.link_label   || d.element_label   || d.label || '';
+  const elementId =
+    d.project_id || d.element_id || '';
+  const value =
+    d.question || d.evidence_url || d.certification_url ||
+    d.link_url || d.event_value || '';
+
+  // metadata: todo lo que no son columnas fijas
+  const fixed = ['event_name','event','timestamp','session_id','section_id',
+                 'section_label','element_id','element_label','event_value',
+                 'page_url','language'];
+  const meta = {};
+  Object.keys(d).forEach(k => { if (fixed.indexOf(k) === -1) meta[k] = d[k]; });
+
+  sh.appendRow([
+    nowStr(),
+    d.session_id || '',
+    d.event_name || d.event || '',
+    d.section_id || '',
+    d.section_label || '',
+    elementId,
+    String(label).slice(0, 300),
+    String(value).slice(0, 300),
+    d.page_url || '',
+    d.language || '',
+    JSON.stringify(meta).slice(0, 2000),
+  ]);
+}
+
+// ── Escribir session_end en Session_Summary ───────────────────────
+function writeSummary(d) {
+  const sh = getSheet('Session_Summary');
+  sh.appendRow([
+    nowStr(),
+    d.session_id || '',
+    d.duration_seconds || 0,
+    d.language || '',
+    arr(d.sections_seen),
+    d.top_section || '',
+    d.top_section_seconds || 0,
+    arr(d.projects_clicked),
+    arr(d.evidence_clicked),
+    arr(d.certifications_clicked),
+    arr(d.chat_questions),
+    arr(d.external_links_clicked),
+    d.contact_clicked ? 'sí' : 'no',
+    d.cv_clicked ? 'sí' : 'no',
+    JSON.stringify(d).slice(0, 4000),
+  ]);
+}
+
+// ── Marcar sesión como completada en Sessions ─────────────────────
+function marcarCompletada(sessionId) {
+  try {
+    const sh = getSheet('Sessions');
+    const data = sh.getDataRange().getValues();
+    const idCol = HEADERS.Sessions.indexOf('session_id');
+    const stCol = HEADERS.Sessions.indexOf('status');
+    for (let i = data.length - 1; i >= 1; i--) {
+      if (data[i][idCol] === sessionId) {
+        sh.getRange(i + 1, stCol + 1).setValue('completed');
+        break;
+      }
+    }
+  } catch (err) { /* no romper */ }
+}
+
+// ── Email: nuevo visitante ────────────────────────────────────────
+function emailNuevoVisitante(d) {
+  const ctx = [];
+  if (d.company) ctx.push('Empresa: ' + d.company);
+  if (d.role)    ctx.push('Rol: ' + d.role);
+  if (d.source)  ctx.push('Source: ' + d.source);
+  const utm = d.utm_source
+    ? 'UTM: ' + [d.utm_source, d.utm_medium, d.utm_campaign].filter(Boolean).join(' / ') + '\n'
+    : '';
+
+  const cuerpo =
+    'Alguien acaba de entrar a tu portafolio.\n\n' +
+    'Hora: ' + nowStr() + '\n' +
+    'Sesión: ' + d.session_id + '\n' +
+    'Idioma: ' + (d.language || '—') + '\n' +
+    'URL: ' + (d.page_url || '—') + '\n' +
+    'Referrer: ' + (d.referrer || 'Directo') + '\n' +
+    utm +
+    (ctx.length ? ctx.join('\n') + '\n' : '') +
+    'Dispositivo: ' + (d.device || '—') + ' · ' + (d.browser || '—') + '\n' +
+    'Pantalla: ' + (d.viewport || '—') + '\n\n' +
+    'El resumen de qué hizo te llega cuando termine la sesión.';
+
+  GmailApp.sendEmail(EMAIL_DESTINO, 'Nuevo visitante en tu portafolio', cuerpo);
+}
+
+// ── Email: resumen de sesión ──────────────────────────────────────
+function emailResumen(d) {
+  const min = Math.floor((d.duration_seconds || 0) / 60);
+  const seg = (d.duration_seconds || 0) % 60;
+  const dur = (min ? min + 'm ' : '') + seg + 's';
+
+  const linea = (label, val) => {
+    const v = arr(val);
+    return v ? label + ': ' + v + '\n' : '';
+  };
+
+  const cuerpo =
+    'Terminó una sesión en tu portafolio.\n\n' +
+    'Sesión: ' + d.session_id + '\n' +
+    'Idioma: ' + (d.language || '—') + '\n' +
+    'Duración: ' + dur + '\n\n' +
+    '─── Qué vio ───\n' +
+    linea('Secciones', d.sections_seen) +
+    (d.top_section ? 'Más tiempo en: ' + d.top_section + ' (' + (d.top_section_seconds || 0) + 's)\n' : '') +
+    '\n─── Qué abrió ───\n' +
+    linea('Proyectos', d.projects_clicked) +
+    linea('Evidencias', d.evidence_clicked) +
+    linea('Certificaciones', d.certifications_clicked) +
+    linea('Links externos', d.external_links_clicked) +
+    '\n─── Chatbot ───\n' +
+    linea('Preguntas', d.chat_questions) +
+    '\n─── Conversión ───\n' +
+    'Contacto: ' + (d.contact_clicked ? 'SÍ' : 'no') + '\n' +
+    'CV: ' + (d.cv_clicked ? 'SÍ' : 'no') + '\n' +
+    'Interactuó con modelo 3D: ' + (d.model_viewer_interacted ? 'sí' : 'no') + '\n\n' +
+    'Detalle completo en la hoja Session_Summary.';
+
+  GmailApp.sendEmail(EMAIL_DESTINO, 'Resumen de sesión del portafolio', cuerpo);
+}
+
+// ── Helpers ───────────────────────────────────────────────────────
+function nowStr() {
+  return Utilities.formatDate(new Date(), ZONA, 'dd/MM/yyyy HH:mm:ss');
+}
+function arr(v) {
+  if (!v) return '';
+  if (Array.isArray(v)) return v.filter(Boolean).join(' · ');
+  if (typeof v === 'object') return Object.keys(v).map(k => k + ':' + v[k]).join(' · ');
+  return String(v);
+}
+function json(obj) {
+  return ContentService.createTextOutput(JSON.stringify(obj))
+    .setMimeType(ContentService.MimeType.JSON);
+}
