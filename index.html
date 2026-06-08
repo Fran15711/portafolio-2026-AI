@@ -38,39 +38,41 @@
      noscript: si no hay JS, se oculta y el sitio aparece directamente.
 ============================================================ -->
 <div id="splash" class="splash" role="dialog" aria-modal="true" aria-label="Bienvenida">
+  <div class="splash__lang" role="group" aria-label="Idioma / Language">
+    <button class="splash__lang-btn is-active" id="splash-lang-es" aria-pressed="true">ES</button>
+    <span class="splash__lang-sep">·</span>
+    <button class="splash__lang-btn" id="splash-lang-en" aria-pressed="false">EN</button>
+  </div>
   <div class="splash__inner">
     <p class="splash__eyebrow" aria-hidden="true">Francisco Noriega · Portafolio</p>
-    <h1 class="splash__greeting">Hola :)</h1>
-    <p class="splash__line splash__line--1">
-      Si estás viendo esto, es porque quiero trabajar contigo.
+    <h1 class="splash__greeting" data-i18n="splash.greeting">Hola.</h1>
+    <p class="splash__line splash__line--1" data-i18n="splash.l1">
+      Si estás viendo esto, quiero trabajar contigo.
     </p>
-    <p class="splash__line splash__line--2">
+    <p class="splash__line splash__line--2" data-i18n="splash.l2">
       Gracias por tu tiempo, tu interés y tu buena intuición.
     </p>
-    <p class="splash__line splash__line--3">
-      Este portafolio reúne evidencias y resultados de estrategias<br>
-      y proyectos de los que he sido responsable.
+    <p class="splash__line splash__line--3" data-i18n="splash.l3">
+      Este portafolio reúne evidencias y resultados de estrategias y proyectos de los que he sido responsable.
     </p>
   </div>
 
   <div class="splash__loader" aria-hidden="true">
     <div class="splash__loader-row">
-      <span class="splash__loader-label">Cargando portafolio</span>
+      <span class="splash__loader-label" data-i18n="splash.loading">Cargando portafolio</span>
       <span class="splash__loader-pct" id="splash-counter">0%</span>
     </div>
     <div class="splash__progress-track">
       <div class="splash__progress-bar" id="splash-progress-bar"></div>
     </div>
-    <p class="splash__loader-note">
+    <p class="splash__loader-note" data-i18n="splash.note">
       Versión en construcción — todavía estoy puliendo detalles.
     </p>
   </div>
 
   <button class="splash__skip" id="splash-skip"
           aria-label="Saltar introducción y entrar al portafolio"
-          data-track="welcome_skipped">
-    Saltar
-  </button>
+          data-track="welcome_skipped" data-i18n="splash.skip">Saltar</button>
 </div>
 
 <noscript>
@@ -146,7 +148,7 @@
   <!-- ==========================================
        1 · CHAT — hero / asistente IA
   ========================================== -->
-  <section id="chat" class="s-chat" data-track-section="chat"
+  <section id="chat" class="s-chat" data-section-label="Chat IA"
            aria-labelledby="chat-title">
 
     <!-- Área de conversación (vacía al inicio) -->
@@ -160,10 +162,10 @@
     <div class="chat__center" id="chat-center">
       <div class="chat__headline">
         <p class="chat__context">Francisco Noriega · Marketing Performance</p>
-        <h1 class="chat__title" id="chat-title">Pregúntame antes de la entrevista.</h1>
-        <p class="chat__sub">Es una pre-entrevista: pregúntame por mi experiencia, mis proyectos, cómo trabajo o qué hago fuera del trabajo.<br>
+        <h1 class="chat__title" id="chat-title" data-i18n="chat.title">Pregúntame antes de la entrevista.</h1>
+        <p class="chat__sub" data-i18n-html="chat.sub">Es una pre-entrevista: pregúntame por mi experiencia, mis proyectos o qué hago fuera del trabajo.<br>
           Te responde una versión mía entrenada con todo lo que he hecho.</p>
-        <p class="chat__scroll-invite"><a href="#metricas">O explora el portafolio directamente ↓</a></p>
+        <p class="chat__scroll-invite"><a href="#metricas" data-i18n="chat.scrollInvite">O explora el portafolio directamente ↓</a></p>
       </div>
 
       <!-- Typewriter: cicla sugerencias de preguntas -->
@@ -180,22 +182,22 @@
       <!-- Chips de sugerencias rápidas -->
       <div class="chat__chips" id="chat-chips" role="group" aria-label="Preguntas sugeridas">
         <button class="chat__chip"
-                data-question="¿Cómo piensa Francisco?"
+                data-question="¿Cómo piensas?"
                 data-track="suggested_prompt_clicked"
-                data-track-label="como_piensa">
-          ¿Cómo piensa Francisco?
+                data-track-label="como_piensas">
+          ¿Cómo piensas?
         </button>
         <button class="chat__chip"
-                data-question="¿Qué tan medible es su trabajo?"
+                data-question="¿Qué tan medible es tu trabajo?"
                 data-track="suggested_prompt_clicked"
                 data-track-label="trabajo_medible">
-          ¿Qué tan medible es su trabajo?
+          ¿Qué tan medible es tu trabajo?
         </button>
         <button class="chat__chip"
-                data-question="¿Qué haría en mi equipo?"
+                data-question="¿Qué harías en mi equipo?"
                 data-track="suggested_prompt_clicked"
-                data-track-label="que_haria_equipo">
-          ¿Qué haría en mi equipo?
+                data-track-label="que_harias_equipo">
+          ¿Qué harías en mi equipo?
         </button>
       </div>
 
@@ -204,7 +206,7 @@
         <textarea
           id="chat-input"
           class="chat__textarea"
-          placeholder="Escribe tu pregunta…"
+          placeholder="Escríbeme una pregunta…" data-i18n-ph="chat.placeholder"
           rows="1"
           maxlength="300"
           aria-label="Escribe tu pregunta"
@@ -213,7 +215,7 @@
           data-track="chat_focus"
         ></textarea>
         <button id="chat-send" class="chat__send"
-                aria-label="Enviar pregunta"
+                aria-label="Enviar pregunta" data-i18n-aria="chat.send"
                 data-track="chat_question_submitted"
                 disabled>
           <svg width="15" height="15" viewBox="0 0 15 15" fill="none" aria-hidden="true">
@@ -251,7 +253,7 @@
   <!-- ==========================================
        2 · MÉTRICAS — barra de números clave
   ========================================== -->
-  <section id="metricas" class="s-metricas" data-track-section="metricas"
+  <section id="metricas" class="s-metricas" data-section-label="Métricas"
            aria-label="Métricas principales">
     <div class="metricas__inner">
 
@@ -299,7 +301,7 @@
   <!-- ==========================================
        3 · PROYECTOS — hexágonos + evidencias
   ========================================== -->
-  <section id="proyectos" class="s-proyectos" data-track-section="proyectos"
+  <section id="proyectos" class="s-proyectos" data-section-label="Proyectos / Evidencias"
            aria-labelledby="proyectos-title">
 
     <!-- Capa de ambiente: el fondo cambia por marca seleccionada -->
@@ -589,7 +591,7 @@
   <!-- ==========================================
        4 · GALGA — case study principal
   ========================================== -->
-  <section id="galga" class="s-galga" data-track-section="galga"
+  <section id="galga" class="s-galga" data-section-label="GalgaX Case Study"
            aria-labelledby="galga-title">
     <div class="galga__inner">
 
@@ -707,6 +709,7 @@
             auto-rotate-delay="2000"
             rotation-per-second="6deg"
             camera-controls
+            disable-pan
             shadow-intensity="0.25"
             exposure="1.15"
             environment-image="neutral"
@@ -733,6 +736,8 @@
                 Ver archivo GLB →
               </a>
             </div>
+            <!-- Microinstrucción de interacción (mobile) -->
+            <div class="galga__model-hint" id="mv-hint" aria-hidden="true" data-i18n="mv.hint">Arrastra para rotar</div>
           </model-viewer>
         </div>
 
@@ -746,7 +751,7 @@
   <!-- ==========================================
        5 · EXPERIENCIA — cartas como protagonistas
   ========================================== -->
-  <section id="experiencia" class="s-experiencia" data-track-section="experiencia"
+  <section id="experiencia" class="s-experiencia" data-section-label="Experiencia"
            aria-labelledby="experiencia-title">
     <div class="experiencia__inner">
 
@@ -823,7 +828,7 @@
        El efecto spotlight (luz que sigue al mouse) lo aplica script.js
        actualizando --mouse-x / --mouse-y en cada cert-card.
   ========================================== -->
-  <section id="certificaciones" class="s-certificaciones"
+  <section id="certificaciones" data-section-label="Certificaciones" class="s-certificaciones"
            data-track-section="certificaciones"
            aria-labelledby="certs-title">
     <div class="certificaciones__inner">
@@ -919,7 +924,7 @@
   <!-- ==========================================
        7 · SOBRE MÍ — forma de trabajar
   ========================================== -->
-  <section id="sobre-mi" class="s-sobre-mi" data-track-section="sobre_mi"
+  <section id="sobre-mi" class="s-sobre-mi" data-section-label="Sobre mí"
            aria-labelledby="sobre-mi-title">
     <div class="sobre-mi__inner">
 
@@ -997,7 +1002,7 @@
   <!-- ==========================================
        8 · CONTACTO — mínimo y directo
   ========================================== -->
-  <section id="contacto" class="s-contacto" data-track-section="contacto"
+  <section id="contacto" class="s-contacto" data-section-label="Contacto"
            aria-labelledby="contacto-title">
     <div class="contacto__inner">
 
