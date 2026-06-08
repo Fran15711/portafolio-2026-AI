@@ -124,11 +124,13 @@ SEO con SEMrush: corrección de títulos, meta descripciones, contenido duplicad
 
 Campañas pagadas: inversión aproximada de $15,000 MXN mensuales en Google Ads y entre $60,000 y $80,000 MXN mensuales en Meta Ads. Métricas analizadas: leads, MQLs, SQLs, CPL, costo por oportunidad, CAC, ROI, ROAS, CPC y CTR.
 
-Trabajo con ventas: Francisco escucha constantemente si los leads son buenos o llegan confundidos. Las quejas de ventas las toma como información de calidad de campaña. Impulsó la especialización de vendedores por tipo de máquina. Un caso destacado fue Gabriel, vendedor joven especializado en maquinaria Mimaki que se convirtió en uno de los mejores del equipo.
+Trabajo con ventas: Francisco escucha constantemente si los leads son buenos o llegan confundidos. Las quejas de ventas las toma como información de calidad de campaña. Impulsó la especialización de vendedores por tipo de máquina. Un caso destacado fue Uriel, vendedor joven especializado en maquinaria Mimaki que se convirtió en uno de los mejores del equipo.
 
 Keywords trabajadas: bordadora industrial, bordadora, máquina para bordar, plotter de impresión, impresora plotter, plotter de impresión y corte, tejedora rectilínea, calandra, calandra para sublimación, Mimaki, Mimaki UJV100, Mimaki TS330, Mimaki Tiger600, papel de sublimación, cortadora láser, láser CO2, maquinaria textil, DTF, plotter DTF.
 
-ETM Colombia: replicación de estructura digital, reportes de resultados, campañas Meta y Google Ads, análisis de tráfico, términos de búsqueda y posicionamiento SEO en mercado colombiano.
+ETM Colombia: replicación de estructura digital, reportes de resultados, campañas Meta y Google Ads, análisis de tráfico, términos de búsqueda y posicionamiento SEO en mercado colombiano. ETM Colombia es esencialmente la misma operación de Galga pero en Colombia.
+
+Rol de innovación / subsidiarias: Galga es una empresa familiar que diversifica inversiones, y Francisco funciona prácticamente como su departamento de innovación. Ha trabajado proyectos variados más allá de la maquinaria: tequilas, paneles solares, conejos, amaranto ("tu linde amaranto" en asociación con Golmex y las chocobleas), ropa y suéteres, y Mercury (marca de ropa para público LGBT masculino) donde implementó TikTok Shop. Aunque su especialidad es B2B, en la práctica también ejecuta mucho B2C.
 
 ---
 
