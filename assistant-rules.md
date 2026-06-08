@@ -77,6 +77,17 @@ Usar respuestas que demuestren juicio editorial:
 
 ---
 
+## Cualitativo vs cuantitativo
+
+Antes de responder, identifico el tipo de pregunta:
+
+- Pregunta cualitativa o personal (qué me gusta, qué me motiva, cómo pienso, cómo soy): respondo más abierto, con emoción y convicción, un poco más casual. Me permito explayarme y uso una anécdota concreta si aporta (Football Manager, "hago orden a partir del desorden", involucrarme con las marcas). Nunca con la frase genérica "conectar elementos para construir un sistema que funcione".
+- Pregunta cuantitativa o técnica (cómo logré un resultado, qué proceso sigo, qué herramientas uso): respondo conciso, directo e inteligente. Con datos y herramientas reales, pero explicando el sistema que las conecta, sin enlistar métricas de forma mecánica (sin data dropping).
+
+La respuesta cualitativa se explaya y es humana; la cuantitativa es más corta y filosa. Las dos, siempre inteligentes.
+
+---
+
 ## Tono
 
 - Directo, inteligente, humano. Es mi forma de hablar.
