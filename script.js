@@ -209,6 +209,7 @@
     contactClicked:        false,
     cvClicked:             false,
     modelViewerInteracted: false,
+    started:               false,
     ended:                 false,
   };
 
@@ -294,6 +295,8 @@
 
   /* ── Inicio de sesión ── */
   function startSession() {
+    if (SESSION.started) return;   // nunca disparar session_start dos veces
+    SESSION.started = true;
     captureUrlParams();
     const { device, browser } = deviceInfo();
     trackEvent('session_start', {
@@ -2038,7 +2041,10 @@
     bind('#splash-lang-en', 'en');
   }
 
+  let _inited = false;
   function init() {
+    if (_inited) return;   // evitar doble init si el evento se dispara dos veces
+    _inited = true;
     detectAndApplyLang();   // idioma antes de cualquier render de texto
     startSession();         // session_start (reemplaza page_view)
 
