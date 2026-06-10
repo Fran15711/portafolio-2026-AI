@@ -969,6 +969,32 @@
     /* Botón enviar */
     if (sendBtn) sendBtn.addEventListener('click', doSend);
 
+    /* ── Auto-mensaje inicial del bot ──────────────────────────────
+       Aparece cuando la sección chat entra en viewport (después del
+       splash). Solo una vez por sesión. Convierte el chat de "form
+       decorativo" a "conversación que ya empezó".                  */
+    let greetingShown = false;
+    const greetingObs = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (!entry.isIntersecting || greetingShown) return;
+        greetingShown = true;
+        greetingObs.disconnect();
+
+        const delay = reducedMotion ? 300 : 1400;
+        setTimeout(() => {
+          const greet = getLang() === 'en'
+            ? "Hi. I'm a version of Francisco trained on everything he's done.\n\nAsk me anything — about his work, his projects or how he thinks."
+            : "Hola. Soy una versión de Francisco entrenada con su experiencia.\n\nPregúntame lo que quieras — sobre su trabajo, sus proyectos o cómo piensa.";
+          hideChatCenter();
+          appendMessage(greet, 'bot');
+          scrollConvToBottom(true);
+        }, delay);
+      });
+    }, { threshold: 0.4 });
+
+    const chatSection = qs('#chat');
+    if (chatSection) greetingObs.observe(chatSection);
+
     /* Chips de sugerencias */
     if (chipsEl) {
       qsa('.chat__chip', chipsEl).forEach(chip => {
@@ -1374,6 +1400,14 @@
    * 13. HEXÁGONOS
    * ============================================================ */
   function initHexagons() {
+    /* Añade clase .hex--hint a los primeros 4 hexágonos para el pulso de
+       affordance. La clase se quita automáticamente a los 3 segundos. */
+    setTimeout(() => {
+      qsa('.hex-wrap').forEach((h, i) => {
+        if (i < 4) h.classList.add('hex--hint');
+        setTimeout(() => h.classList.remove('hex--hint'), 3200);
+      });
+    }, 2000);
     const hexWraps = qsa('.hex-wrap');
     if (!hexWraps.length) return;
 
@@ -2074,15 +2108,28 @@
     if (!isTouchDevice && !reducedMotion) initCursorTrail();
   }
 
-  /* Fin de sesión: lo más confiable en mobile es pagehide + visibilitychange */
+  /* Fin de sesión: solo en cierre/navegación real, nunca en cambio de pestaña */
   function initSessionEnd() {
-    const fire = () => endSession();
-    window.addEventListener('pagehide', fire);
-    document.addEventListener('visibilitychange', () => {
-      if (document.visibilityState === 'hidden') fire();
+    /* pagehide es el evento más confiable en mobile y desktop.
+       persisted=true significa que va al bfcache (back/forward) — no cerrar.
+       persisted=false significa cierre o navegación real — cerrar sesión. */
+    window.addEventListener('pagehide', (e) => {
+      if (!e.persisted) endSession();
     });
-    /* beforeunload como último respaldo en desktop */
-    window.addEventListener('beforeunload', fire);
+
+    /* beforeunload como respaldo en desktop */
+    window.addEventListener('beforeunload', () => endSession());
+
+    /* visibilitychange: NO cierra la sesión.
+       Solo pausa/reanuda el contador de tiempo por sección.
+       Cambiar de pestaña, bloquear pantalla, minimizar — la sesión sigue. */
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState === 'hidden') {
+        flushSectionTime();              // guarda el tiempo acumulado hasta ahora
+      } else if (document.visibilityState === 'visible') {
+        SESSION.sectionEnterTime = Date.now(); // no contar el tiempo que estuvo fuera
+      }
+    });
   }
 
   document.addEventListener('DOMContentLoaded', init);
