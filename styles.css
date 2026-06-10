@@ -548,26 +548,6 @@ button {
   max-width: 100%;
   margin: 0;
 }
-
-/* Saludo inicial del asistente: jerarquía de apertura, centrado como el hero */
-.chat__message--intro {
-  align-items: center;
-  text-align: center;
-  margin-top: clamp(48px, 16vh, 180px);
-}
-.chat__message--intro p {
-  font-size: clamp(19px, 2.4vw, 26px);
-  line-height: 1.4;
-  color: var(--text-primary);
-  font-weight: 500;
-  letter-spacing: -0.01em;
-}
-.chat__message--intro p + p {
-  font-size: clamp(15px, 1.7vw, 18px);
-  color: var(--text-secondary);
-  font-weight: 400;
-  letter-spacing: 0;
-}
 .chat__message--bot .chat__line--bullet {
   padding-left: 14px;
   border-left: 2px solid var(--border-medium);
