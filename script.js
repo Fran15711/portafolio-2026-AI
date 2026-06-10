@@ -1050,7 +1050,7 @@
         setTimeout(() => {
           const greet = t('chat.greeting');
           hideChatCenter();
-          appendMessage(greet, 'bot');
+          appendMessage(greet, 'bot', 'intro');
           scrollConvToBottom(true);
         }, delay);
       });
@@ -1221,12 +1221,13 @@
   }
 
   /* Añadir mensaje a la conversación */
-  function appendMessage(text, role) {
+  function appendMessage(text, role, variant) {
     const conv = qs('#chat-conversation');
     if (!conv) return;
 
     const wrapper = document.createElement('div');
     wrapper.className = `chat__message chat__message--${role}`;
+    if (variant) wrapper.classList.add(`chat__message--${variant}`);
 
     if (role === 'user') {
       const p = document.createElement('p');
