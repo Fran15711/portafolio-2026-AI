@@ -51,7 +51,6 @@
       'splash.note': 'Versión en construcción — todavía estoy puliendo detalles.',
       'splash.skip': 'Saltar',
       'chat.title': 'Pregúntame antes de la entrevista.',
-      'chat.greeting': 'Hola. Soy Francisco — bueno, una versión mía entrenada con todo lo que he hecho.\n\nPregúntame lo que quieras — sobre mi trabajo, mis proyectos o cómo pienso.',
       'chat.sub': 'Es una pre-entrevista: pregúntame por mi experiencia, mis proyectos o qué hago fuera del trabajo.<br>Te responde una versión mía entrenada con todo lo que he hecho.',
       'chat.placeholder': 'Escríbeme una pregunta…',
       'chat.send': 'Enviar pregunta',
@@ -65,38 +64,6 @@
         { q: '¿Qué tan medible es tu trabajo?',  t: 'trabajo_medible' },
         { q: '¿Qué harías en mi equipo?',        t: 'que_harias_equipo' },
       ],
-      'nav.proyectos': 'Proyectos',
-      'nav.galga': 'Galga',
-      'nav.experiencia': 'Experiencia',
-      'nav.certificaciones': 'Certificaciones',
-      'nav.contacto': 'Contacto',
-      'sec.proyectos.eyebrow': 'Proyectos',
-      'sec.proyectos.title': '23 marcas. No dejes que te las cuente.',
-      'sec.proyectos.sub': 'Velo por ti mismo: el comercial de radio, la estrategia de comunicación, cada proyecto. Selecciona una marca y revisa la evidencia directa.',
-      'sec.exp.eyebrow': 'Trayectoria',
-      'sec.exp.title': 'Cuatro etapas.<br>Las empresas que me recomiendan.',
-      'sec.exp.sub': 'No es mi palabra contra el mundo: las empresas donde trabajé dejaron su recomendación por escrito. Cada carta abre aquí mismo.',
-      'exp.galga.cta': 'Ver case study — $26.1M MXN atribuido en 2025 →',
-      'sec.certs.eyebrow': 'Certificaciones',
-      'sec.certs.title': 'No solo aprendí en la cancha.',
-      'sec.certs.sub': 'Lo empírico está bien, pero también me formé. Cada botón lleva a la credencial original.',
-      'sec.about.eyebrow': 'Sobre mí',
-      'sec.about.title': 'Cómo trabajo',
-      'about.lead': 'Lo mío no es decir que amo el marketing. Es dejar que el trabajo lo demuestre.',
-      'about.para': 'Conecto estrategia, ejecución y datos. Sin ego de canales: uso el que funciona.',
-      'about.pillar1': 'Trabajo con evidencia. Cuando un proyecto no tiene datos, los genero con tracking y auditorías antes de decidir. No me invento cosas.',
-      'about.pillar2': 'No tengo ego con los canales. Uso el que tiene sentido para el objetivo.',
-      'about.pillar3': 'Reporto con claridad. Los datos sirven cuando alguien puede entenderlos.',
-      'about.pillar4': 'Prefiero hacer con criterio que seguir listas sin entender el porqué.',
-      'about.stat.blogs': 'blogs escritos',
-      'about.stat.proyectos': 'proyectos terminados',
-      'about.stat.marcas': 'marcas con evidencias',
-      'about.stat.cafes': 'cafés (aprox.)',
-      'contacto.title': 'Si llegaste hasta aquí,<br>probablemente ya tenemos algo que hablar.',
-      'contacto.cv': 'Descargar PDF',
-      'chat.scrollHint': 'Ver más contenido',
-      'mv.loading': 'Cargando modelo AR…',
-      'mv.glb': 'Ver archivo GLB →',
       'typewriter': [
         'Pregúntame qué hay detrás del CV…',
         'Pregúntame cómo pienso cuando entro a un problema…',
@@ -117,7 +84,6 @@
       'splash.note': "Work in progress — I'm still polishing details.",
       'splash.skip': 'Skip',
       'chat.title': 'Interview me before the interview.',
-      'chat.greeting': "Hi. I'm Francisco — well, a version of me trained on everything I've done.\n\nAsk me anything — about my work, my projects or how I think.",
       'chat.sub': "It's a pre-interview: ask me about my experience, my projects, or what I do outside of work.<br>You're talking to a version of me trained on everything I've done.",
       'chat.placeholder': 'Ask me a question…',
       'chat.send': 'Send question',
@@ -131,38 +97,6 @@
         { q: 'How measurable is your work?',      t: 'work_measurable' },
         { q: 'What would you do on my team?',     t: 'on_my_team' },
       ],
-      'nav.proyectos': 'Projects',
-      'nav.galga': 'Galga',
-      'nav.experiencia': 'Experience',
-      'nav.certificaciones': 'Certifications',
-      'nav.contacto': 'Contact',
-      'sec.proyectos.eyebrow': 'Projects',
-      'sec.proyectos.title': "23 brands. Don't take my word for it.",
-      'sec.proyectos.sub': 'See for yourself: the radio spot, the communication strategy, every project. Pick a brand and check the evidence directly.',
-      'sec.exp.eyebrow': 'Career',
-      'sec.exp.title': 'Four stages.<br>The companies that recommend me.',
-      'sec.exp.sub': "It's not my word against the world: the companies I worked for put their recommendation in writing. Each letter opens right here.",
-      'exp.galga.cta': 'See case study — $26.1M MXN attributed in 2025 →',
-      'sec.certs.eyebrow': 'Certifications',
-      'sec.certs.title': "I didn't only learn on the field.",
-      'sec.certs.sub': 'Hands-on is great, but I also trained formally. Each button links to the original credential.',
-      'sec.about.eyebrow': 'About me',
-      'sec.about.title': 'How I work',
-      'about.lead': "My thing isn't saying I love marketing. It's letting the work prove it.",
-      'about.para': 'I connect strategy, execution and data. No channel ego: I use what works.',
-      'about.pillar1': "I work with evidence. When a project has no data, I generate it with tracking and audits before deciding. I don't make things up.",
-      'about.pillar2': 'I have no ego about channels. I use the one that makes sense for the goal.',
-      'about.pillar3': 'I report clearly. Data is useful when someone can actually understand it.',
-      'about.pillar4': 'I prefer doing with judgment over following checklists without understanding why.',
-      'about.stat.blogs': 'blogs written',
-      'about.stat.proyectos': 'finished projects',
-      'about.stat.marcas': 'brands with evidence',
-      'about.stat.cafes': 'coffees (approx.)',
-      'contacto.title': "If you made it this far,<br>we probably already have something to talk about.",
-      'contacto.cv': 'Download PDF',
-      'chat.scrollHint': 'See more content',
-      'mv.loading': 'Loading AR model…',
-      'mv.glb': 'View GLB file →',
       'typewriter': [
         'Ask me what sits behind the résumé…',
         'Ask me how I think when I enter a messy problem…',
@@ -275,7 +209,6 @@
     contactClicked:        false,
     cvClicked:             false,
     modelViewerInteracted: false,
-    started:               false,
     ended:                 false,
   };
 
@@ -361,8 +294,6 @@
 
   /* ── Inicio de sesión ── */
   function startSession() {
-    if (SESSION.started) return;   // nunca disparar session_start dos veces
-    SESSION.started = true;
     captureUrlParams();
     const { device, browser } = deviceInfo();
     trackEvent('session_start', {
@@ -1035,30 +966,6 @@
     /* Botón enviar */
     if (sendBtn) sendBtn.addEventListener('click', doSend);
 
-    /* ── Auto-mensaje inicial del bot ──────────────────────────────
-       Aparece cuando la sección chat entra en viewport (después del
-       splash). Solo una vez por sesión. Convierte el chat de "form
-       decorativo" a "conversación que ya empezó".                  */
-    let greetingShown = false;
-    const greetingObs = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (!entry.isIntersecting || greetingShown) return;
-        greetingShown = true;
-        greetingObs.disconnect();
-
-        const delay = reducedMotion ? 300 : 1400;
-        setTimeout(() => {
-          const greet = t('chat.greeting');
-          hideChatCenter();
-          appendMessage(greet, 'bot', 'intro');
-          scrollConvToBottom(true);
-        }, delay);
-      });
-    }, { threshold: 0.4 });
-
-    const chatSection = qs('#chat');
-    if (chatSection) greetingObs.observe(chatSection);
-
     /* Chips de sugerencias */
     if (chipsEl) {
       qsa('.chat__chip', chipsEl).forEach(chip => {
@@ -1221,13 +1128,12 @@
   }
 
   /* Añadir mensaje a la conversación */
-  function appendMessage(text, role, variant) {
+  function appendMessage(text, role) {
     const conv = qs('#chat-conversation');
     if (!conv) return;
 
     const wrapper = document.createElement('div');
     wrapper.className = `chat__message chat__message--${role}`;
-    if (variant) wrapper.classList.add(`chat__message--${variant}`);
 
     if (role === 'user') {
       const p = document.createElement('p');
@@ -1465,14 +1371,6 @@
    * 13. HEXÁGONOS
    * ============================================================ */
   function initHexagons() {
-    /* Añade clase .hex--hint a los primeros 4 hexágonos para el pulso de
-       affordance. La clase se quita automáticamente a los 3 segundos. */
-    setTimeout(() => {
-      qsa('.hex-wrap').forEach((h, i) => {
-        if (i < 4) h.classList.add('hex--hint');
-        setTimeout(() => h.classList.remove('hex--hint'), 3200);
-      });
-    }, 2000);
     const hexWraps = qsa('.hex-wrap');
     if (!hexWraps.length) return;
 
@@ -2140,10 +2038,7 @@
     bind('#splash-lang-en', 'en');
   }
 
-  let _inited = false;
   function init() {
-    if (_inited) return;   // evitar doble init si el evento se dispara dos veces
-    _inited = true;
     detectAndApplyLang();   // idioma antes de cualquier render de texto
     startSession();         // session_start (reemplaza page_view)
 
@@ -2173,28 +2068,15 @@
     if (!isTouchDevice && !reducedMotion) initCursorTrail();
   }
 
-  /* Fin de sesión: solo en cierre/navegación real, nunca en cambio de pestaña */
+  /* Fin de sesión: lo más confiable en mobile es pagehide + visibilitychange */
   function initSessionEnd() {
-    /* pagehide es el evento más confiable en mobile y desktop.
-       persisted=true significa que va al bfcache (back/forward) — no cerrar.
-       persisted=false significa cierre o navegación real — cerrar sesión. */
-    window.addEventListener('pagehide', (e) => {
-      if (!e.persisted) endSession();
-    });
-
-    /* beforeunload como respaldo en desktop */
-    window.addEventListener('beforeunload', () => endSession());
-
-    /* visibilitychange: NO cierra la sesión.
-       Solo pausa/reanuda el contador de tiempo por sección.
-       Cambiar de pestaña, bloquear pantalla, minimizar — la sesión sigue. */
+    const fire = () => endSession();
+    window.addEventListener('pagehide', fire);
     document.addEventListener('visibilitychange', () => {
-      if (document.visibilityState === 'hidden') {
-        flushSectionTime();              // guarda el tiempo acumulado hasta ahora
-      } else if (document.visibilityState === 'visible') {
-        SESSION.sectionEnterTime = Date.now(); // no contar el tiempo que estuvo fuera
-      }
+      if (document.visibilityState === 'hidden') fire();
     });
+    /* beforeunload como último respaldo en desktop */
+    window.addEventListener('beforeunload', fire);
   }
 
   document.addEventListener('DOMContentLoaded', init);
