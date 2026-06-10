@@ -51,6 +51,7 @@
       'splash.note': 'Versión en construcción — todavía estoy puliendo detalles.',
       'splash.skip': 'Saltar',
       'chat.title': 'Pregúntame antes de la entrevista.',
+      'chat.greeting': 'Hola. Soy Francisco — bueno, una versión mía entrenada con todo lo que he hecho.\n\nEsto es una pre-entrevista: pregúntame lo que le preguntarías a un candidato. Cómo pienso, qué he construido, cómo trabajo con ventas, o qué haría en tu equipo.',
       'chat.sub': 'Es una pre-entrevista: pregúntame por mi experiencia, mis proyectos o qué hago fuera del trabajo.<br>Te responde una versión mía entrenada con todo lo que he hecho.',
       'chat.placeholder': 'Escríbeme una pregunta…',
       'chat.send': 'Enviar pregunta',
@@ -116,6 +117,7 @@
       'splash.note': "Work in progress — I'm still polishing details.",
       'splash.skip': 'Skip',
       'chat.title': 'Interview me before the interview.',
+      'chat.greeting': "Hi. I'm Francisco — well, a version of me trained on everything I've done.\n\nThis is a pre-interview: ask me what you'd ask any candidate. How I think, what I've built, how I work with sales, or what I'd do on your team.",
       'chat.sub': "It's a pre-interview: ask me about my experience, my projects, or what I do outside of work.<br>You're talking to a version of me trained on everything I've done.",
       'chat.placeholder': 'Ask me a question…',
       'chat.send': 'Send question',
@@ -1046,9 +1048,7 @@
 
         const delay = reducedMotion ? 300 : 1400;
         setTimeout(() => {
-          const greet = getLang() === 'en'
-            ? "Hi. I'm a version of Francisco trained on everything he's done.\n\nAsk me anything — about his work, his projects or how he thinks."
-            : "Hola. Soy una versión de Francisco entrenada con su experiencia.\n\nPregúntame lo que quieras — sobre su trabajo, sus proyectos o cómo piensa.";
+          const greet = t('chat.greeting');
           hideChatCenter();
           appendMessage(greet, 'bot');
           scrollConvToBottom(true);
