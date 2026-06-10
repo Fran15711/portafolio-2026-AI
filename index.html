@@ -91,15 +91,15 @@
 
     <ul class="navbar__links" id="navbar-links" role="list">
       <li><a href="#proyectos" class="navbar__link"
-             data-track="nav_clicked" data-track-label="nav_proyectos" data-i18n="nav.proyectos">Proyectos</a></li>
+             data-track="nav_clicked" data-track-label="nav_proyectos">Proyectos</a></li>
       <li><a href="#galga" class="navbar__link"
-             data-track="nav_clicked" data-track-label="nav_galga" data-i18n="nav.galga">Galga</a></li>
+             data-track="nav_clicked" data-track-label="nav_galga">Galga</a></li>
       <li><a href="#experiencia" class="navbar__link"
-             data-track="nav_clicked" data-track-label="nav_experiencia" data-i18n="nav.experiencia">Experiencia</a></li>
+             data-track="nav_clicked" data-track-label="nav_experiencia">Experiencia</a></li>
       <li><a href="#certificaciones" class="navbar__link"
-             data-track="nav_clicked" data-track-label="nav_certs" data-i18n="nav.certificaciones">Certificaciones</a></li>
+             data-track="nav_clicked" data-track-label="nav_certs">Certificaciones</a></li>
       <li><a href="#contacto" class="navbar__link navbar__link--cta"
-             data-track="contact_clicked" data-track-label="nav_contacto" data-i18n="nav.contacto">Contacto</a></li>
+             data-track="contact_clicked" data-track-label="nav_contacto">Contacto</a></li>
     </ul>
 
     <!-- Switch tema global: 🌙 / ☀️ -->
@@ -234,13 +234,14 @@
 
       <!-- Disclaimer -->
       <p class="chat__disclaimer">
-        <span data-i18n="chat.disclaimer_pre">El asistente puede cometer errores. Para información exacta, revisa las evidencias o </span><a href="#contacto" data-track="contact_clicked"
-              data-track-label="chat_disclaimer_contact" data-i18n="chat.disclaimer_link">escríbeme directamente</a>.
+        El asistente puede cometer errores. Para información exacta, revisa las evidencias
+        o <a href="#contacto" data-track="contact_clicked"
+              data-track-label="chat_disclaimer_contact">escríbeme directamente</a>.
       </p>
     </div>
 
     <!-- Flecha de scroll hacia abajo -->
-    <a href="#metricas" class="chat__scroll-hint" aria-label="Ver más contenido" data-i18n-aria="chat.scrollHint">
+    <a href="#metricas" class="chat__scroll-hint" aria-label="Ver más contenido">
       <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
         <path d="M2 5l6 6 6-6"
               stroke="currentColor" stroke-width="1.3"
@@ -309,9 +310,12 @@
     <div class="proyectos__inner">
 
       <div class="proyectos__header">
-        <p class="section-eyebrow" data-i18n="sec.proyectos.eyebrow">Proyectos</p>
-        <h2 class="section-title" id="proyectos-title" data-i18n="sec.proyectos.title">23 marcas. No dejes que te las cuente.</h2>
-        <p class="section-sub" data-i18n="sec.proyectos.sub">Velo por ti mismo: el comercial de radio, la estrategia de comunicación, cada proyecto. Selecciona una marca y revisa la evidencia directa.</p>
+        <p class="section-eyebrow">Proyectos</p>
+        <h2 class="section-title" id="proyectos-title">23 marcas. No dejes que te las cuente.</h2>
+        <p class="section-sub">
+          Velo por ti mismo: el comercial de radio, la estrategia de comunicación,
+          cada proyecto. Selecciona una marca y revisa la evidencia directa.
+        </p>
       </div>
 
       <!-- Filtros -->
@@ -716,7 +720,7 @@
           >
             <!-- Barra de progreso personalizada -->
             <div slot="progress-bar" class="galga__model-progress-bar" id="mv-progress-bar">
-              <span class="galga__model-progress-label" id="mv-progress-label" data-i18n="mv.loading">Cargando modelo AR…</span>
+              <span class="galga__model-progress-label" id="mv-progress-label">Cargando modelo AR…</span>
               <div class="galga__model-progress-fill-track">
                 <div class="galga__model-progress-fill" id="mv-progress-fill"></div>
               </div>
@@ -728,7 +732,9 @@
               <a href="https://cdn.shopify.com/3d/models/0aacfdb4c31734ca/mimaki_UJ330H.glb"
                  target="_blank" rel="noopener noreferrer"
                  data-track="external_link_clicked"
-                 data-track-label="galga_glb_fallback" data-i18n="mv.glb">Ver archivo GLB →</a>
+                 data-track-label="galga_glb_fallback">
+                Ver archivo GLB →
+              </a>
             </div>
             <!-- Microinstrucción de interacción (mobile) -->
             <div class="galga__model-hint" id="mv-hint" aria-hidden="true" data-i18n="mv.hint">Arrastra para rotar</div>
@@ -750,9 +756,14 @@
     <div class="experiencia__inner">
 
       <div class="experiencia__header">
-        <p class="section-eyebrow" data-i18n="sec.exp.eyebrow">Trayectoria</p>
-        <h2 class="section-title" id="experiencia-title" data-i18n-html="sec.exp.title">Cuatro etapas.<br>Las empresas que me recomiendan.</h2>
-        <p class="section-sub" data-i18n="sec.exp.sub">No es mi palabra contra el mundo: las empresas donde trabajé dejaron su recomendación por escrito. Cada carta abre aquí mismo.</p>
+        <p class="section-eyebrow">Trayectoria</p>
+        <h2 class="section-title" id="experiencia-title">
+          Cuatro etapas.<br>Las empresas que me recomiendan.
+        </h2>
+        <p class="section-sub">
+          No es mi palabra contra el mundo: las empresas donde trabajé
+          dejaron su recomendación por escrito. Cada carta abre aquí mismo.
+        </p>
       </div>
 
       <!-- Las cartas SON el contenido, no el apéndice -->
@@ -767,7 +778,9 @@
           <h3 class="exp-letter__company">Galga Maquinaria</h3>
           <p class="exp-letter__role">Marketing Performance / Growth</p>
           <a href="#galga" class="exp-letter__cta"
-             data-track="nav_clicked" data-track-label="exp_to_galga" data-i18n="exp.galga.cta">Ver case study — $26.1M MXN atribuido en 2025 →</a>
+             data-track="nav_clicked" data-track-label="exp_to_galga">
+            Ver case study — $26.1M MXN atribuido en 2025 →
+          </a>
         </div>
 
         <a href="https://fran15711.github.io/cartarecomendacionevacolors/"
@@ -821,9 +834,12 @@
     <div class="certificaciones__inner">
 
       <div class="certificaciones__header">
-        <p class="section-eyebrow" data-i18n="sec.certs.eyebrow">Certificaciones</p>
-        <h2 class="section-title" id="certs-title" data-i18n="sec.certs.title">No solo aprendí en la cancha.</h2>
-        <p class="section-sub" data-i18n="sec.certs.sub">Lo empírico está bien, pero también me formé. Cada botón lleva a la credencial original.</p>
+        <p class="section-eyebrow">Certificaciones</p>
+        <h2 class="section-title" id="certs-title">No solo aprendí en la cancha.</h2>
+        <p class="section-sub">
+          Lo empírico está bien, pero también me formé. Cada botón
+          lleva a la credencial original.
+        </p>
       </div>
 
       <!-- Certificaciones: efecto "placa brillante" con canvas (igual que portafolio original) -->
@@ -913,34 +929,40 @@
     <div class="sobre-mi__inner">
 
       <div class="sobre-mi__header">
-        <p class="section-eyebrow" data-i18n="sec.about.eyebrow">Sobre mí</p>
-        <h2 class="section-title" id="sobre-mi-title" data-i18n="sec.about.title">Cómo trabajo</h2>
+        <p class="section-eyebrow">Sobre mí</p>
+        <h2 class="section-title" id="sobre-mi-title">Cómo trabajo</h2>
 
       </div>
 
       <div class="sobre-mi__body">
 
         <div class="sobre-mi__text-col">
-          <p class="sobre-mi__lead" data-i18n="about.lead">Lo mío no es decir que amo el marketing. Es dejar que el trabajo lo demuestre.</p>
-          <p class="sobre-mi__para" data-i18n="about.para">Conecto estrategia, ejecución y datos. Sin ego de canales: uso el que funciona.</p>
+          <p class="sobre-mi__lead">
+            Lo mío no es decir que amo el marketing.
+            Es dejar que el trabajo lo demuestre.
+          </p>
+          <p class="sobre-mi__para">
+            Conecto estrategia, ejecución y datos.
+            Sin ego de canales: uso el que funciona.
+          </p>
         </div>
 
         <div class="sobre-mi__pillars" role="list" aria-label="Principios de trabajo">
           <div class="pillar" role="listitem">
             <span class="pillar__n" aria-hidden="true">01</span>
-            <p class="pillar__text" data-i18n="about.pillar1">Trabajo con evidencia. Cuando un proyecto no tiene datos, los genero con tracking y auditorías antes de decidir. No me invento cosas.</p>
+            <p class="pillar__text">Trabajo con evidencia. Si no hay datos, los busco antes de empezar. No me invento cosas.</p>
           </div>
           <div class="pillar" role="listitem">
             <span class="pillar__n" aria-hidden="true">02</span>
-            <p class="pillar__text" data-i18n="about.pillar2">No tengo ego con los canales. Uso el que tiene sentido para el objetivo.</p>
+            <p class="pillar__text">No tengo ego con los canales. Uso el que tiene sentido para el objetivo.</p>
           </div>
           <div class="pillar" role="listitem">
             <span class="pillar__n" aria-hidden="true">03</span>
-            <p class="pillar__text" data-i18n="about.pillar3">Reporto con claridad. Los datos sirven cuando alguien puede entenderlos.</p>
+            <p class="pillar__text">Reporto con claridad. Los datos sirven cuando alguien puede entenderlos.</p>
           </div>
           <div class="pillar" role="listitem">
             <span class="pillar__n" aria-hidden="true">04</span>
-            <p class="pillar__text" data-i18n="about.pillar4">Prefiero hacer con criterio que seguir listas sin entender el porqué.</p>
+            <p class="pillar__text">Prefiero hacer con criterio que seguir listas sin entender el porqué.</p>
           </div>
         </div>
 
@@ -952,25 +974,25 @@
           <span class="life-stat__value"
                 data-to="300" data-speed="1200"
                 aria-label="Aproximadamente 300 blogs escritos">0</span>
-          <span class="life-stat__label" data-i18n="about.stat.blogs">blogs escritos</span>
+          <span class="life-stat__label">blogs escritos</span>
         </div>
         <div class="life-stat" role="listitem">
           <span class="life-stat__value"
                 data-to="157" data-speed="900"
                 aria-label="Aproximadamente 157 proyectos terminados">0</span>
-          <span class="life-stat__label" data-i18n="about.stat.proyectos">proyectos terminados</span>
+          <span class="life-stat__label">proyectos terminados</span>
         </div>
         <div class="life-stat" role="listitem">
           <span class="life-stat__value"
                 data-to="23" data-speed="600"
                 aria-label="23 marcas con evidencias">0</span>
-          <span class="life-stat__label" data-i18n="about.stat.marcas">marcas con evidencias</span>
+          <span class="life-stat__label">marcas con evidencias</span>
         </div>
         <div class="life-stat" role="listitem">
           <span class="life-stat__value"
                 data-to="1700" data-speed="1500"
                 aria-label="Aproximadamente 1700 cafés">0</span>
-          <span class="life-stat__label" data-i18n="about.stat.cafes">cafés (aprox.)</span>
+          <span class="life-stat__label">cafés (aprox.)</span>
         </div>
       </div>
 
@@ -984,7 +1006,10 @@
            aria-labelledby="contacto-title">
     <div class="contacto__inner">
 
-      <h2 class="contacto__title" id="contacto-title" data-i18n-html="contacto.title">Si llegaste hasta aquí,<br>probablemente ya tenemos algo que hablar.</h2>
+      <h2 class="contacto__title" id="contacto-title">
+        Si llegaste hasta aquí,<br>
+        probablemente ya tenemos algo que hablar.
+      </h2>
 
       <nav class="contacto__links" aria-label="Canales de contacto">
 
@@ -1018,7 +1043,7 @@
            data-track-label="cv_pdf">
           <div class="contacto__item-content">
             <span class="contacto__item-label">CV</span>
-            <span class="contacto__item-value" data-i18n="contacto.cv">Descargar PDF</span>
+            <span class="contacto__item-value">Descargar PDF</span>
           </div>
           <span class="contacto__item-arrow" aria-hidden="true">↓</span>
         </a>
