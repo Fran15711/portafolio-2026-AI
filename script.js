@@ -128,6 +128,39 @@
     applyLanguage(lang, { silent: true });
   }
 
+  /* Aplica el idioma del splash lo antes posible (antes del primer paint)
+     para que abrir ?lang=en no muestre "Hola." un instante antes de "Hello." */
+  function applyLangEarly() {
+    try {
+      const q = new URLSearchParams(window.location.search).get('lang');
+      let lang = null;
+      if (q === 'en' || q === 'es') lang = q;
+      else {
+        const saved = localStorage.getItem('fn-lang');
+        if (saved === 'en' || saved === 'es') lang = saved;
+        else if ((navigator.language || '').toLowerCase().startsWith('en')) lang = 'en';
+      }
+      if (!lang) return;
+      LANG = lang;
+      document.documentElement.lang = lang;
+      const d = I18N[lang];
+      if (!d) return;
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        const k = el.dataset.i18n;
+        if (d[k] != null) el.textContent = d[k];
+      });
+      document.querySelectorAll('[data-i18n-html]').forEach(el => {
+        const k = el.dataset.i18nHtml;
+        if (d[k] != null) el.innerHTML = d[k];
+      });
+      document.querySelectorAll('[data-i18n-ph]').forEach(el => {
+        const k = el.dataset.i18nPh;
+        if (d[k] != null) el.setAttribute('placeholder', d[k]);
+      });
+    } catch (_) {}
+  }
+  applyLangEarly();   // se ejecuta inmediatamente (script tiene defer: corre tras parsear el HTML)
+
   /* Aplica idioma a TODA la interfaz */
   function applyLanguage(lang, opts = {}) {
     LANG = (lang === 'en') ? 'en' : 'es';
@@ -152,6 +185,14 @@
 
     /* Chips sugeridos */
     updateChips();
+
+    /* CV según idioma: ES o EN apuntan a su PDF en Drive */
+    const cvLink = qs('#cv-download-link');
+    if (cvLink) {
+      const CV_ES = 'https://drive.google.com/uc?export=download&id=1CpryN4KDSgOH5dWwPK6GuVV47gEgyKS1';
+      const CV_EN = 'https://drive.google.com/uc?export=download&id=1rGv7N9OLhQVB8JeCTNmLs-vsdQbYjlMn';
+      cvLink.href = (LANG === 'en') ? CV_EN : CV_ES;
+    }
 
     /* Botones de idioma (navbar + splash) */
     qsa('#lang-btn-es, #splash-lang-es').forEach(b => {
@@ -1060,6 +1101,10 @@
           if (loading) { loading.setAttribute('hidden', ''); loading.setAttribute('aria-hidden', 'true'); }
           isSending = false;
           updateSendBtn();
+
+          /* CTA suave a contacto: tras la 2da respuesta del bot, una sola vez */
+          maybeShowChatCta();
+
           scrollConvToBottom();
           trackEvent('chat_response_rendered', { source: 'api_stream' });
         },
@@ -1169,6 +1214,44 @@
     if (force || nearBottom) {
       last.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
     }
+  }
+
+  /* CTA a contacto dentro del chat — se muestra una vez, tras 2+ respuestas */
+  let botReplyCount = 0;
+  let chatCtaShown  = false;
+  function maybeShowChatCta() {
+    botReplyCount++;
+    if (chatCtaShown || botReplyCount < 2) return;
+    chatCtaShown = true;
+
+    const conv = qs('#chat-conversation');
+    if (!conv) return;
+
+    const isEN = getLang() === 'en';
+    const wrap = document.createElement('div');
+    wrap.className = 'chat__cta';
+
+    const p = document.createElement('p');
+    p.className = 'chat__cta-text';
+    p.textContent = isEN
+      ? 'Want to take this further? '
+      : '¿Quieres llevar esto a algo más? ';
+
+    const a = document.createElement('a');
+    a.className = 'chat__cta-link';
+    a.href = '#contacto';
+    a.textContent = isEN ? 'Write to me directly' : 'Escríbeme directo';
+    a.addEventListener('click', () => {
+      trackContactClick('chat_cta');
+      const drawer = qs('#evidence-drawer');
+      closeDrawer && closeDrawer();
+    });
+
+    p.appendChild(a);
+    wrap.appendChild(p);
+    conv.appendChild(wrap);
+    scrollConvToBottom(true);
+    trackEvent('chat_cta_shown', {});
   }
 
   function hideChatCenter() {
@@ -2040,7 +2123,19 @@
 
   function init() {
     detectAndApplyLang();   // idioma antes de cualquier render de texto
-    startSession();         // session_start (reemplaza page_view)
+
+    // Evitar sesiones fantasma por prefetch/prerender del navegador:
+    // solo iniciar la sesión cuando la página es realmente visible.
+    if (document.visibilityState === 'visible') {
+      startSession();       // session_start (reemplaza page_view)
+    } else {
+      document.addEventListener('visibilitychange', function onFirstVisible() {
+        if (document.visibilityState === 'visible') {
+          document.removeEventListener('visibilitychange', onFirstVisible);
+          startSession();
+        }
+      });
+    }
 
     initSplash();
     initNavbar();
