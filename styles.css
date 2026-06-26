@@ -2798,3 +2798,31 @@ html[data-theme="light"] .theme-switch__icon--sun  { opacity: 1; }
   background: linear-gradient(to top, rgba(9,9,11,0.7), transparent);
   border-radius: 0 0 12px 12px;
 }
+
+/* ── CTA del chat hacia contacto (aparece tras 2+ respuestas del bot) ── */
+.chat__cta {
+  width: 100%;
+  max-width: 720px;
+  margin: 4px auto 0;
+  animation: msg-appear 320ms var(--ease-out);
+}
+.chat__cta-text {
+  font-size: 13px;
+  color: var(--text-muted);
+  line-height: 1.6;
+  margin: 0;
+  padding: 12px 0 4px;
+  border-top: 0.5px solid var(--border-subtle);
+}
+.chat__cta-link {
+  color: var(--accent);
+  font-weight: 500;
+  text-decoration: none;
+  border-bottom: 0.5px solid var(--accent-border);
+  padding-bottom: 1px;
+  transition: border-color var(--t-xs) var(--ease), opacity var(--t-xs) var(--ease);
+}
+.chat__cta-link:hover {
+  border-bottom-color: var(--accent);
+  opacity: 0.85;
+}
